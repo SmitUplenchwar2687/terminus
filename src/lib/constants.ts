@@ -48,15 +48,14 @@ export const SKILLS: Skill[] = [
   { name: 'Git', category: 'tooling' },
 ]
 
-// Color per skill category — cosmic palette
 export const CATEGORY_COLORS: Record<Skill['category'], string> = {
-  language:       '#a78bfa',  // soft violet
-  database:       '#60a5fa',  // cosmic blue
-  infrastructure: '#f472b6',  // nebula pink
-  distributed:    '#c084fc',  // mid purple
-  frontend:       '#818cf8',  // indigo
-  ai:             '#e879f9',  // fuchsia
-  tooling:        '#94a3b8',  // slate
+  language: '#00ff41',
+  database: '#00ff41',
+  infrastructure: '#00ff41',
+  distributed: '#00ff41',
+  frontend: '#00ff41',
+  ai: '#00ff41',
+  tooling: '#0a3d0a',
 }
 
 export const METRICS: Metric[] = [

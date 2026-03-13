@@ -1,63 +1,55 @@
 import type { Variants } from 'framer-motion'
 
-// Standard fade-up for section headings and general content
 export const fadeUpVariant: Variants = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 14 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { duration: 0.35, ease: 'linear' },
   },
 }
 
-// Fade in from left
 export const fadeLeftVariant: Variants = {
-  hidden: { opacity: 0, x: -30 },
+  hidden: { opacity: 0, x: -12 },
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.6, ease: 'easeOut' },
+    transition: { duration: 0.35, ease: 'linear' },
   },
 }
 
-// Stagger wrapper — animate children in sequence
 export const staggerContainer: Variants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.1,
+      staggerChildren: 0.09,
+      delayChildren: 0.08,
     },
   },
 }
 
-// Card pop-in for project cards
 export const cardVariant: Variants = {
-  hidden: { opacity: 0, scale: 0.92, y: 24 },
+  hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
-    scale: 1,
     y: 0,
-    transition: { duration: 0.5, ease: 'easeOut' },
+    transition: { duration: 0.28, ease: 'linear' },
   },
 }
 
-// Metric counter fade
 export const metricVariant: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 8 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.45, ease: 'easeOut' },
+    transition: { duration: 0.24, ease: 'linear' },
   },
 }
 
-// Skill tag float-in
 export const skillTagVariant: Variants = {
-  hidden: { opacity: 0, scale: 0.8 },
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    scale: 1,
-    transition: { duration: 0.35, ease: 'easeOut' },
+    transition: { duration: 0.18, ease: 'linear' },
   },
 }

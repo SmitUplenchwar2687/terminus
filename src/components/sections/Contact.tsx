@@ -4,14 +4,13 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { fadeUpVariant, staggerContainer } from '@/lib/motion'
 import NeonButton from '@/components/ui/NeonButton'
-import { useIsMobile } from '@/hooks/useIsMobile'
+import TypewriterText from '@/components/ui/TypewriterText'
 
 const ParticleWave = dynamic(() => import('@/components/3d/ParticleWave'), {
   ssr: false,
-  loading: () => <div className="w-full h-full bg-transparent" />,
+  loading: () => <div className="w-full h-6 bg-transparent" />,
 })
 
-// SVG icons
 const GithubIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
@@ -34,58 +33,48 @@ const EmailIcon = () => (
 export default function Contact() {
   const ref = useRef<HTMLElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
-  const isMobile = useIsMobile()
 
   return (
     <section id="contact" ref={ref} className="relative py-28 px-6 overflow-hidden">
-      {/* Particle wave background */}
-      {!isMobile && (
-        <div className="absolute inset-0 z-0 opacity-40">
-          <ParticleWave />
-        </div>
-      )}
+      <div className="relative z-10 max-w-3xl mx-auto text-center terminal-window">
+        <div className="terminal-header">$ connect --channel direct</div>
 
-      {/* Top separator line */}
-      <div
-        className="absolute top-0 left-0 right-0 h-px pointer-events-none"
-        style={{
-          background: 'linear-gradient(to right, transparent, rgba(124,58,237,0.35), transparent)',
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="relative z-10 max-w-3xl mx-auto text-center">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="flex flex-col items-center gap-10"
+          className="terminal-content flex flex-col items-center gap-10"
         >
-          {/* Label */}
           <motion.div variants={fadeUpVariant}>
-            <span className="font-mono text-xs text-cyan/40 tracking-[0.4em] uppercase">
-              04 // Contact
-            </span>
+            <TypewriterText
+              text="04 // contact"
+              as="span"
+              start={isInView}
+              className="font-mono text-xs text-cyan/52 tracking-[0.3em] uppercase"
+            />
           </motion.div>
 
-          {/* Headline */}
-          <motion.h2
-            variants={fadeUpVariant}
-            className="font-orbitron text-3xl md:text-5xl font-black text-white leading-tight"
-          >
-            Let&apos;s build something{' '}
-            <span className="text-cyan neon-text-cyan">remarkable.</span>
-          </motion.h2>
+          <motion.div variants={fadeUpVariant}>
+            <TypewriterText
+              text="let's build something remarkable"
+              as="h2"
+              start={isInView}
+              delay={220}
+              className="font-orbitron text-3xl md:text-5xl font-normal text-cyan leading-tight"
+            />
+          </motion.div>
 
-          <motion.p
-            variants={fadeUpVariant}
-            className="font-rajdhani text-gray-400 text-lg max-w-xl leading-relaxed"
-          >
-            I&apos;m open to senior backend and distributed systems roles. If you&apos;re working on
-            something technically interesting, I&apos;d love to hear about it.
-          </motion.p>
+          <motion.div variants={fadeUpVariant}>
+            <TypewriterText
+              text="i'm open to senior backend and distributed systems roles. if you're working on something technically interesting, i'd love to hear about it."
+              as="p"
+              start={isInView}
+              delay={620}
+              speed={10}
+              className="text-cyan/72 text-lg max-w-xl leading-relaxed"
+            />
+          </motion.div>
 
-          {/* CTA buttons */}
           <motion.div
             variants={staggerContainer}
             className="flex flex-wrap justify-center gap-4"
@@ -93,7 +82,7 @@ export default function Contact() {
             <motion.div variants={fadeUpVariant}>
               <NeonButton
                 href="https://github.com/smit-1923"
-                label="GitHub"
+                label="github"
                 variant="cyan"
                 icon={<GithubIcon />}
               />
@@ -101,7 +90,7 @@ export default function Contact() {
             <motion.div variants={fadeUpVariant}>
               <NeonButton
                 href="https://linkedin.com/in/smituplenchwar"
-                label="LinkedIn"
+                label="linkedin"
                 variant="magenta"
                 icon={<LinkedInIcon />}
               />
@@ -109,7 +98,7 @@ export default function Contact() {
             <motion.div variants={fadeUpVariant}>
               <NeonButton
                 href="mailto:smit@example.com"
-                label="Email Me"
+                label="email me"
                 variant="cyan"
                 icon={<EmailIcon />}
                 external={false}
@@ -117,17 +106,13 @@ export default function Contact() {
             </motion.div>
           </motion.div>
 
-          {/* Footer micro-text */}
           <motion.div
             variants={fadeUpVariant}
-            className="pt-12 flex flex-col items-center gap-2"
+            className="pt-8 flex flex-col items-center gap-3 w-full"
           >
-            <div className="h-px w-16 bg-gradient-to-r from-transparent via-cyan/20 to-transparent" />
-            <p className="font-mono text-[0.6rem] text-gray-600 tracking-[0.3em] uppercase mt-4">
-              Smit Uplenchwar · Backend & Distributed Systems · 2025
-            </p>
-            <p className="font-mono text-[0.55rem] text-gray-700 tracking-widest mt-1">
-              Built with Next.js · React Three Fiber · Framer Motion
+            <ParticleWave />
+            <p className="font-mono text-[0.7rem] text-cyan/42 tracking-[0.2em] uppercase">
+              smit uplenchwar | backend & distributed systems | 2025
             </p>
           </motion.div>
         </motion.div>

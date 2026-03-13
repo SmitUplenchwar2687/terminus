@@ -9,23 +9,16 @@ interface NeonButtonProps {
   external?: boolean
 }
 
-// Cosmic color map — variant names kept identical to avoid changing callers
 const VARIANTS = {
   cyan: {
-    border:     'rgba(124, 58, 237, 0.55)',
-    text:       '#c4b5fd',
-    bg:         'rgba(124, 58, 237, 0.06)',
-    glowIdle:   'rgba(124, 58, 237, 0.25)',
-    glowHover:  'rgba(124, 58, 237, 0.55)',
-    glow2:      'rgba(96, 165, 250, 0.15)',
+    border: 'rgba(0, 255, 65, 0.24)',
+    text: '#00ff41',
+    hover: '#39ff14',
   },
   magenta: {
-    border:     'rgba(244, 114, 182, 0.55)',
-    text:       '#f9a8d4',
-    bg:         'rgba(244, 114, 182, 0.06)',
-    glowIdle:   'rgba(244, 114, 182, 0.25)',
-    glowHover:  'rgba(244, 114, 182, 0.55)',
-    glow2:      'rgba(196, 132, 252, 0.15)',
+    border: 'rgba(57, 255, 20, 0.28)',
+    text: '#39ff14',
+    hover: '#39ff14',
   },
 } as const
 
@@ -43,28 +36,28 @@ export default function NeonButton({
       href={href}
       target={external ? '_blank' : undefined}
       rel={external ? 'noopener noreferrer' : undefined}
-      whileHover={{ scale: 1.04 }}
-      whileTap={{ scale: 0.97 }}
-      className="relative inline-flex items-center gap-2.5 px-6 py-3 rounded-md font-orbitron text-xs tracking-widest uppercase transition-all duration-400"
+      whileHover={{ x: 4 }}
+      whileTap={{ scale: 0.98 }}
+      className="inline-flex items-center gap-2 px-4 py-2 font-orbitron text-sm uppercase tracking-[0.08em]"
       style={{
-        border:     `1px solid ${v.border}`,
-        color:      v.text,
-        background: v.bg,
-        boxShadow:  `0 0 10px ${v.glowIdle}, inset 0 0 10px ${v.glowIdle}30`,
+        border: `1px solid ${v.border}`,
+        color: v.text,
+        background: 'rgba(0, 255, 65, 0.03)',
       }}
       onMouseEnter={(e) => {
         const el = e.currentTarget as HTMLElement
-        el.style.boxShadow = `0 0 22px ${v.glowHover}, 0 0 45px ${v.glow2}, inset 0 0 18px ${v.glowHover}20`
-        el.style.borderColor = v.glowHover
+        el.style.borderColor = v.hover
+        el.style.color = v.hover
       }}
       onMouseLeave={(e) => {
         const el = e.currentTarget as HTMLElement
-        el.style.boxShadow = `0 0 10px ${v.glowIdle}, inset 0 0 10px ${v.glowIdle}30`
         el.style.borderColor = v.border
+        el.style.color = v.text
       }}
     >
+      <span>{'>'}</span>
       {icon && <span className="flex-shrink-0 opacity-80">{icon}</span>}
-      {label}
+      <span>{label}</span>
     </motion.a>
   )
 }
