@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0a0a0f;
+  --cyan: #00f0ff;
+  --magenta: #ff00e5;
+  --electric-blue: #0040ff;
+}
+
+/* ─── Base ─────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: #c8d6e5;
+  font-family: var(--font-rajdhani), 'Rajdhani', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 2px; }
+
+/* ─── Scanline overlay ──────────────────────────────── */
+.scanlines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 240, 255, 0.025) 2px,
+    rgba(0, 240, 255, 0.025) 4px
+  );
+  pointer-events: none;
+}
+
+/* ─── Grid background ───────────────────────────────── */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+/* ─── Glassmorphism ─────────────────────────────────── */
+.glass {
+  background: rgba(10, 10, 20, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+}
+
+.glass-magenta {
+  background: rgba(10, 10, 20, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 0, 229, 0.15);
+}
+
+/* ─── Neon glow text ────────────────────────────────── */
+.neon-text-cyan {
+  text-shadow:
+    0 0 10px rgba(0, 240, 255, 0.8),
+    0 0 20px rgba(0, 240, 255, 0.5),
+    0 0 40px rgba(0, 240, 255, 0.3);
+}
+
+.neon-text-magenta {
+  text-shadow:
+    0 0 10px rgba(255, 0, 229, 0.8),
+    0 0 20px rgba(255, 0, 229, 0.5),
+    0 0 40px rgba(255, 0, 229, 0.3);
+}
+
+/* ─── Neon box glow ─────────────────────────────────── */
+.neon-border-cyan {
+  box-shadow:
+    0 0 5px rgba(0, 240, 255, 0.3),
+    0 0 15px rgba(0, 240, 255, 0.15),
+    inset 0 0 5px rgba(0, 240, 255, 0.05);
+}
+
+.neon-border-magenta {
+  box-shadow:
+    0 0 5px rgba(255, 0, 229, 0.3),
+    0 0 15px rgba(255, 0, 229, 0.15),
+    inset 0 0 5px rgba(255, 0, 229, 0.05);
+}
+
+/* ─── Section base ──────────────────────────────────── */
+section {
+  position: relative;
+}
+
+/* ─── Section fade-in (Framer Motion driven) ────────── */
+.section-hidden {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+/* ─── Typewriter cursor ─────────────────────────────── */
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--cyan);
+  margin-left: 4px;
+  vertical-align: middle;
+  animation: blink-cursor 0.75s step-end infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─── Project card tilt (JS-driven, needs CSS transition) */
+.project-card {
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.project-card:hover {
+  box-shadow:
+    0 0 20px rgba(0, 240, 255, 0.25),
+    0 0 40px rgba(0, 240, 255, 0.1),
+    inset 0 0 20px rgba(0, 240, 255, 0.05);
+  border-color: rgba(0, 240, 255, 0.5);
+}
+
+/* reset on leave */
+.project-card.resetting {
+  transition: transform 0.4s ease, box-shadow 0.3s ease;
+}
+
+/* ─── Skill tag pill ────────────────────────────────── */
+.skill-tag {
+  font-family: var(--font-share-tech-mono), monospace;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: var(--cyan);
+  background: rgba(0, 240, 255, 0.06);
+  white-space: nowrap;
+}
+
+.skill-tag-magenta {
+  border-color: rgba(255, 0, 229, 0.3);
+  color: var(--magenta);
+  background: rgba(255, 0, 229, 0.06);
+}
+
+/* ─── Nav link ──────────────────────────────────────── */
+.nav-link {
+  font-family: var(--font-orbitron), sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: rgba(200, 214, 229, 0.6);
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--cyan);
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+}
+
+/* ─── 3D canvas containers ──────────────────────────── */
+.canvas-container {
+  position: absolute;
+  inset: 0;
+}
