@@ -1,58 +1,14 @@
-import type { Variants } from 'framer-motion'
-
-const transition = { duration: 0.3, ease: 'easeOut' } as const
-
-export const fadeUpVariant: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition,
-  },
+export const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: 'easeOut' } },
 }
 
-export const fadeLeftVariant: Variants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition,
-  },
-}
-
-export const staggerContainer: Variants = {
+export const staggerContainer = {
   hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.07,
-      delayChildren: 0.04,
-    },
-  },
+  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
 }
 
-export const cardVariant: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition,
-  },
-}
-
-export const metricVariant: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition,
-  },
-}
-
-export const skillTagVariant: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition,
-  },
+export const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.5, ease: 'easeOut' } },
 }

@@ -11,21 +11,21 @@ const config: Config = {
       colors: {
         background: '#000000',
         cyan: {
-          DEFAULT: '#ffffff',
-          500: '#ffffff',
+          DEFAULT: '#00f0ff',
+          500: '#00f0ff',
         },
-        magenta: {
+        orange: {
           DEFAULT: '#ff6600',
           500: '#ff6600',
         },
         muted: {
-          DEFAULT: '#666666',
-          500: '#666666',
+          DEFAULT: '#444444',
+          500: '#444444',
         },
       },
       fontFamily: {
-        orbitron: ['"Clash Display"', 'sans-serif'],
-        rajdhani: ['"Satoshi"', 'sans-serif'],
+        clash: ['Clash Display', 'sans-serif'],
+        satoshi: ['Satoshi', 'sans-serif'],
         mono: ['var(--font-jetbrains-mono)', 'monospace'],
       },
     },

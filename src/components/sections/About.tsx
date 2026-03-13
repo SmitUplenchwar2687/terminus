@@ -1,70 +1,75 @@
 'use client'
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { fadeUpVariant, staggerContainer, metricVariant } from '@/lib/motion'
 import { METRICS } from '@/lib/constants'
+import { fadeUp, staggerContainer } from '@/lib/motion'
+
+function CountUp({ target, suffix, active }: { target: number; suffix: string; active: boolean }) {
+  const [val, setVal] = useState(0)
+
+  useEffect(() => {
+    if (!active) return
+    const duration = 1400
+    const start = performance.now()
+    const raf = (now: number) => {
+      const t = Math.min((now - start) / duration, 1)
+      const eased = 1 - Math.pow(1 - t, 3)
+      setVal(+(target * eased).toFixed(target % 1 !== 0 ? 1 : 0))
+      if (t < 1) requestAnimationFrame(raf)
+    }
+    requestAnimationFrame(raf)
+  }, [active, target])
+
+  return <>{val}{suffix}</>
+}
 
 export default function About() {
-  const ref = useRef<HTMLElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
-    <section id="about" ref={ref} className="px-6 py-40">
-      <div className="section-shell">
-        <motion.div
-          variants={fadeUpVariant}
+    <section id="about" className="py-32">
+      <div className="section-shell" ref={ref}>
+        <div className="terminal-header">
+          <span className="terminal-header-text">{'// 01 — ABOUT'}</span>
+          <div className="terminal-header-line" />
+        </div>
+
+        <motion.p
+          variants={fadeUp}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="max-w-[760px]"
+          style={{
+            fontFamily: 'Satoshi, sans-serif',
+            fontSize: '1.1rem',
+            lineHeight: 1.8,
+            color: '#e0e0e0',
+            maxWidth: '640px',
+          }}
         >
-          <span className="mono-line text-xs uppercase tracking-[0.24em] text-muted">
-            01 / about
-          </span>
-          <h2 className="mt-4 font-orbitron text-4xl md:text-6xl leading-none text-white">
-            Quiet systems,
-            <span className="text-magenta"> loud outcomes.</span>
-          </h2>
+          Software Engineer with 4+ years designing and scaling distributed backend systems in{' '}
+          <span style={{ color: '#fff' }}>Go and Python</span> on AWS and Kubernetes. Currently at{' '}
+          <span style={{ color: '#fff' }}>Radiant</span>, building high-throughput event-driven
+          pipelines and backend infrastructure. M.S. Computer Science,{' '}
+          <span style={{ color: '#fff' }}>University at Buffalo</span>. I care about correctness,
+          fault tolerance, and systems that hold together under load.
+        </motion.p>
+
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16"
+        >
+          {METRICS.map((m) => (
+            <motion.div key={m.label} variants={fadeUp}>
+              <div className="metric-number">
+                <CountUp target={m.value} suffix={m.suffix} active={isInView} />
+              </div>
+              <div className="metric-label">{m.label}</div>
+            </motion.div>
+          ))}
         </motion.div>
-
-        <div className="mt-16 grid gap-14 md:grid-cols-[minmax(0,1fr)_260px]">
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate={isInView ? 'visible' : 'hidden'}
-            className="space-y-8"
-          >
-            <motion.p variants={fadeUpVariant} className="text-lg leading-relaxed text-white">
-              Application Engineer at <span className="text-white">Radiant</span>. M.S. Computer
-              Science, University at Buffalo.
-            </motion.p>
-            <motion.p variants={fadeUpVariant} className="text-lg leading-relaxed text-muted">
-              I&apos;m passionate about distributed systems, backend infrastructure, and building
-              things that scale. Whether it&apos;s designing rate-limiting libraries with Raft
-              consensus, migrating databases at zero downtime, or wiring up AI agents — I care
-              about correctness, performance, and systems that hold up under pressure.
-            </motion.p>
-            <motion.p variants={fadeUpVariant} className="text-lg leading-relaxed text-muted">
-              When I&apos;m not deep in Go or Python, I&apos;m thinking about CAP theorem
-              trade-offs, gRPC service meshes, and why distributed clocks are impossibly hard.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate={isInView ? 'visible' : 'hidden'}
-            className="space-y-5"
-          >
-            {METRICS.map((metric) => (
-              <motion.div key={metric.label} variants={metricVariant} className="border-b border-[#222] pb-5">
-                <div className="font-orbitron text-3xl leading-none text-white">{metric.value}</div>
-                <div className="mt-2 mono-line text-xs uppercase tracking-[0.18em] text-muted">
-                  {metric.label}
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
       </div>
     </section>
   )

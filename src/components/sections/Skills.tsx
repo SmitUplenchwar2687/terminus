@@ -2,43 +2,103 @@
 import dynamic from 'next/dynamic'
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { fadeUpVariant } from '@/lib/motion'
+import { useIsMobile } from '@/hooks/useIsMobile'
+import { SKILL_CATEGORIES } from '@/lib/constants'
+import { fadeUp } from '@/lib/motion'
 
-const SkillsCloud = dynamic(() => import('@/components/3d/SkillsCloud'), {
+const SkillsRing = dynamic(() => import('@/components/3d/SkillsRing'), {
   ssr: false,
-  loading: () => <div className="h-[72px]" />,
+  loading: () => <div style={{ flex: 1 }} />,
 })
 
 export default function Skills() {
-  const ref = useRef<HTMLElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
+  const isMobile = useIsMobile()
 
   return (
-    <section id="skills" ref={ref} className="px-6 py-40">
-      <div className="section-shell">
-        <motion.div
-          variants={fadeUpVariant}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-          className="max-w-[720px]"
-        >
-          <span className="mono-line text-xs uppercase tracking-[0.24em] text-muted">
-            03 / skills
-          </span>
-          <h2 className="mt-4 font-orbitron text-4xl md:text-6xl leading-none text-white">
-            Tools in motion.
-          </h2>
-        </motion.div>
-
-        <motion.div
-          variants={fadeUpVariant}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-          className="mt-20"
-        >
-          <SkillsCloud />
-        </motion.div>
+    <section id="skills" className="py-32">
+      <div className="section-shell" ref={ref}>
+        <div className="terminal-header">
+          <span className="terminal-header-text">{'// 04 — TECH STACK'}</span>
+          <div className="terminal-header-line" />
+        </div>
       </div>
+
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        animate={isInView ? 'visible' : 'hidden'}
+        style={{
+          width: 'min(1200px, calc(100vw - 3rem))',
+          margin: '0 auto',
+          border: '1px solid #1a1a1a',
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+          minHeight: '480px',
+        }}
+      >
+        {/* LEFT — categories as flowing text */}
+        <div style={{
+          borderRight: isMobile ? 'none' : '1px solid #1a1a1a',
+          borderBottom: isMobile ? '1px solid #1a1a1a' : 'none',
+        }}>
+          {/* Title bar */}
+          <div style={{
+            padding: '0.65rem 1.25rem',
+            borderBottom: '1px solid #1a1a1a',
+            fontFamily: 'var(--font-jetbrains-mono)',
+            fontSize: '0.6rem',
+            letterSpacing: '0.18em',
+            color: '#2a2a2a',
+            textTransform: 'uppercase',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+          }}>
+            <span style={{ color: '#1a1a1a' }}>●</span>
+            <span style={{ color: '#1e1e1e' }}>●</span>
+            <span style={{ color: '#222' }}>●</span>
+            <span style={{ marginLeft: '0.5rem' }}>categories</span>
+          </div>
+
+          {/* Skills by category — dot-separated flowing text */}
+          <div style={{ padding: '1.75rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            {SKILL_CATEGORIES.map((cat) => (
+              <div key={cat.label}>
+                <div style={{
+                  fontFamily: 'var(--font-jetbrains-mono)',
+                  fontSize: '0.58rem',
+                  letterSpacing: '0.22em',
+                  textTransform: 'uppercase',
+                  color: '#00f0ff',
+                  opacity: 0.55,
+                  marginBottom: '0.5rem',
+                }}>
+                  {cat.label}
+                </div>
+                <p style={{
+                  fontFamily: 'var(--font-jetbrains-mono)',
+                  fontSize: '0.8rem',
+                  color: '#666',
+                  letterSpacing: '0.04em',
+                  lineHeight: 1.9,
+                  margin: 0,
+                }}>
+                  {cat.skills.join('  ·  ')}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* RIGHT — 3D ring */}
+        {isMobile ? null : (
+          <div style={{ position: 'relative', minHeight: '480px' }}>
+            <SkillsRing />
+          </div>
+        )}
+      </motion.div>
     </section>
   )
 }
