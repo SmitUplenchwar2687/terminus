@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import type { Project } from '@/lib/types'
 import { cardVariant } from '@/lib/motion'
-import TypewriterText from '@/components/ui/TypewriterText'
 
 interface ProjectCardProps {
   project: Project
@@ -15,53 +14,37 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 
   return (
     <motion.div variants={cardVariant}>
-      <div
-        className="terminal-window project-card h-full"
+      <a
+        href={project.githubUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="project-card block py-6"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <div className="terminal-header">
-          {`project-${String(index + 1).padStart(2, '0')} :: /opt/portfolio`}
-        </div>
-
-        <div className="terminal-content flex flex-col h-full gap-4">
-          <div className="text-sm text-cyan/70">
-            {hovered ? '> select' : '>'}{' '}
-            <TypewriterText
-              text={project.name}
-              as="span"
-              delay={index * 180}
-              speed={24}
-            />
+        <div className="flex flex-col gap-3 md:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-[64px_minmax(0,1fr)_auto] gap-3 md:gap-6 items-baseline">
+            <span className="mono-line text-sm text-muted">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <div className="flex items-center gap-3 min-w-0">
+              <span className={`text-sm ${hovered ? 'text-magenta' : 'text-transparent'}`}>
+                &gt;
+              </span>
+              <h3 className="font-orbitron text-2xl md:text-[2rem] leading-none truncate">
+                {project.name}
+              </h3>
+            </div>
+            <div className="mono-line text-sm text-muted md:text-right">
+              {project.tags.join(' · ')}
+            </div>
           </div>
 
-          <TypewriterText
-            text={project.description}
-            as="p"
-            delay={220 + index * 180}
-            speed={8}
-            className="text-sm leading-relaxed text-cyan/78"
-          />
-
-          <div className="flex flex-wrap gap-2 pt-1">
-            {project.tags.map((tag) => (
-              <span key={tag} className="skill-tag">{tag}</span>
-            ))}
-          </div>
-
-          {project.githubUrl ? (
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-auto text-sm text-cyan/80 hover:text-magenta transition-colors"
-            >
-              <span>{'>'}</span>
-              <span>view source</span>
-            </a>
-          ) : null}
+          <p className="max-w-3xl pl-0 md:pl-[76px] text-base leading-relaxed text-muted">
+            {project.description}
+          </p>
         </div>
-      </div>
+      </a>
     </motion.div>
   )
 }

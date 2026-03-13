@@ -1,15 +1,8 @@
 'use client'
-import dynamic from 'next/dynamic'
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { fadeUpVariant, staggerContainer } from '@/lib/motion'
 import NeonButton from '@/components/ui/NeonButton'
-import TypewriterText from '@/components/ui/TypewriterText'
-
-const ParticleWave = dynamic(() => import('@/components/3d/ParticleWave'), {
-  ssr: false,
-  loading: () => <div className="w-full h-6 bg-transparent" />,
-})
 
 const GithubIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -35,84 +28,60 @@ export default function Contact() {
   const isInView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
-    <section id="contact" ref={ref} className="relative py-28 px-6 overflow-hidden">
-      <div className="relative z-10 max-w-3xl mx-auto text-center terminal-window">
-        <div className="terminal-header">$ connect --channel direct</div>
-
+    <section id="contact" ref={ref} className="px-6 py-40">
+      <div className="section-shell">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="terminal-content flex flex-col items-center gap-10"
+          className="text-center"
         >
           <motion.div variants={fadeUpVariant}>
-            <TypewriterText
-              text="04 // contact"
-              as="span"
-              start={isInView}
-              className="font-mono text-xs text-cyan/52 tracking-[0.3em] uppercase"
-            />
+            <span className="mono-line text-xs uppercase tracking-[0.24em] text-muted">
+              04 / contact
+            </span>
           </motion.div>
 
-          <motion.div variants={fadeUpVariant}>
-            <TypewriterText
-              text="let's build something remarkable"
-              as="h2"
-              start={isInView}
-              delay={220}
-              className="font-orbitron text-3xl md:text-5xl font-normal text-cyan leading-tight"
-            />
-          </motion.div>
-
-          <motion.div variants={fadeUpVariant}>
-            <TypewriterText
-              text="i'm open to senior backend and distributed systems roles. if you're working on something technically interesting, i'd love to hear about it."
-              as="p"
-              start={isInView}
-              delay={620}
-              speed={10}
-              className="text-cyan/72 text-lg max-w-xl leading-relaxed"
-            />
-          </motion.div>
-
-          <motion.div
-            variants={staggerContainer}
-            className="flex flex-wrap justify-center gap-4"
+          <motion.h2
+            variants={fadeUpVariant}
+            className="mt-4 font-orbitron text-4xl md:text-6xl leading-none text-white"
           >
-            <motion.div variants={fadeUpVariant}>
-              <NeonButton
-                href="https://github.com/smit-1923"
-                label="github"
-                variant="cyan"
-                icon={<GithubIcon />}
-              />
-            </motion.div>
-            <motion.div variants={fadeUpVariant}>
-              <NeonButton
-                href="https://linkedin.com/in/smituplenchwar"
-                label="linkedin"
-                variant="magenta"
-                icon={<LinkedInIcon />}
-              />
-            </motion.div>
-            <motion.div variants={fadeUpVariant}>
-              <NeonButton
-                href="mailto:smit@example.com"
-                label="email me"
-                variant="cyan"
-                icon={<EmailIcon />}
-                external={false}
-              />
-            </motion.div>
-          </motion.div>
+            Let&apos;s build something <span className="text-magenta">remarkable.</span>
+          </motion.h2>
+
+          <motion.p
+            variants={fadeUpVariant}
+            className="mx-auto mt-8 max-w-[720px] text-lg leading-relaxed text-muted"
+          >
+            I&apos;m open to senior backend and distributed systems roles. If you&apos;re working on
+            something technically interesting, I&apos;d love to hear about it.
+          </motion.p>
 
           <motion.div
             variants={fadeUpVariant}
-            className="pt-8 flex flex-col items-center gap-3 w-full"
+            className="mt-12 flex flex-wrap justify-center gap-8"
           >
-            <ParticleWave />
-            <p className="font-mono text-[0.7rem] text-cyan/42 tracking-[0.2em] uppercase">
-              smit uplenchwar | backend & distributed systems | 2025
+            <NeonButton href="https://github.com/smit-1923" label="GitHub" icon={<GithubIcon />} />
+            <NeonButton
+              href="https://linkedin.com/in/smituplenchwar"
+              label="LinkedIn"
+              variant="magenta"
+              icon={<LinkedInIcon />}
+            />
+            <NeonButton
+              href="mailto:smit@example.com"
+              label="Email Me"
+              icon={<EmailIcon />}
+              external={false}
+            />
+          </motion.div>
+
+          <motion.div variants={fadeUpVariant} className="mt-24">
+            <p className="mono-line text-xs uppercase tracking-[0.24em] text-muted">
+              Smit Uplenchwar · Backend &amp; Distributed Systems · 2025
+            </p>
+            <p className="mt-3 text-sm text-muted">
+              Built with Next.js · React Three Fiber · Framer Motion
             </p>
           </motion.div>
         </motion.div>

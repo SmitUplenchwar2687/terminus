@@ -6,7 +6,7 @@ import Contact from '@/components/sections/Contact'
 
 export default function Page() {
   return (
-    <main className="relative z-10 crt-frame">
+    <main className="relative z-10">
       <Hero />
       <About />
       <Projects />

@@ -49,13 +49,13 @@ export const SKILLS: Skill[] = [
 ]
 
 export const CATEGORY_COLORS: Record<Skill['category'], string> = {
-  language: '#00ff41',
-  database: '#00ff41',
-  infrastructure: '#00ff41',
-  distributed: '#00ff41',
-  frontend: '#00ff41',
-  ai: '#00ff41',
-  tooling: '#0a3d0a',
+  language: '#ffffff',
+  database: '#ffffff',
+  infrastructure: '#ffffff',
+  distributed: '#ffffff',
+  frontend: '#ffffff',
+  ai: '#ffffff',
+  tooling: '#666666',
 }
 
 export const METRICS: Metric[] = [

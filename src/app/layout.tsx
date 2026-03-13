@@ -1,12 +1,11 @@
 import type { Metadata } from 'next'
-import { IBM_Plex_Mono } from 'next/font/google'
+import { JetBrains_Mono } from 'next/font/google'
 import './globals.css'
-import ScanlineOverlay from '@/components/ui/ScanlineOverlay'
-import GridBackground from '@/components/ui/GridBackground'
+import NoirCursor from '@/components/ui/NoirCursor'
 
-const ibmPlexMono = IBM_Plex_Mono({
+const jetBrainsMono = JetBrains_Mono({
   subsets: ['latin'],
-  variable: '--font-orbitron',
+  variable: '--font-jetbrains-mono',
   weight: ['400', '600'],
   display: 'swap',
 })
@@ -25,13 +24,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={ibmPlexMono.variable}
-    >
+    <html lang="en" className={jetBrainsMono.variable}>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap"
+        />
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap"
+        />
+      </head>
       <body className="bg-background font-rajdhani antialiased relative overflow-x-hidden">
-        <GridBackground />
-        <ScanlineOverlay />
+        <NoirCursor />
         {children}
       </body>
     </html>

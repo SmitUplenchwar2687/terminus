@@ -11,31 +11,22 @@ const config: Config = {
       colors: {
         background: '#000000',
         cyan: {
-          DEFAULT: '#00ff41',
-          500: '#00ff41',
+          DEFAULT: '#ffffff',
+          500: '#ffffff',
         },
         magenta: {
-          DEFAULT: '#39ff14',
-          500: '#39ff14',
+          DEFAULT: '#ff6600',
+          500: '#ff6600',
         },
-        'dim-green': {
-          DEFAULT: '#0a3d0a',
-          500: '#0a3d0a',
+        muted: {
+          DEFAULT: '#666666',
+          500: '#666666',
         },
       },
       fontFamily: {
-        orbitron: ['var(--font-orbitron)', 'monospace'],
-        rajdhani: ['var(--font-orbitron)', 'monospace'],
-        mono: ['var(--font-orbitron)', 'monospace'],
-      },
-      keyframes: {
-        'scroll-bounce': {
-          '0%, 100%': { transform: 'translateY(0)', opacity: '1' },
-          '50%': { transform: 'translateY(8px)', opacity: '0.55' },
-        },
-      },
-      animation: {
-        'scroll-bounce': 'scroll-bounce 1.6s steps(2, end) infinite',
+        orbitron: ['"Clash Display"', 'sans-serif'],
+        rajdhani: ['"Satoshi"', 'sans-serif'],
+        mono: ['var(--font-jetbrains-mono)', 'monospace'],
       },
     },
   },
