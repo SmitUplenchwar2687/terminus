@@ -1,23 +1,25 @@
 import type { Metadata } from 'next'
-import { Orbitron, Rajdhani, Share_Tech_Mono } from 'next/font/google'
+import { Space_Grotesk, Inter, Share_Tech_Mono } from 'next/font/google'
 import './globals.css'
 import ScanlineOverlay from '@/components/ui/ScanlineOverlay'
 import GridBackground from '@/components/ui/GridBackground'
 
-// ─── Fonts ─────────────────────────────────────────────────────────────────
-// All fonts loaded here once via next/font and exposed as CSS variables.
-// Tailwind's fontFamily config consumes these vars.
+// ─── Fonts ──────────────────────────────────────────────────────────────────
+// CSS variable names are preserved so all font-orbitron / font-rajdhani
+// Tailwind classes in section components continue to work unchanged.
 
-const orbitron = Orbitron({
+// Space Grotesk → premium, geometric, premium — replaces Orbitron
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-orbitron',
-  weight: ['400', '500', '700', '800', '900'],
+  variable: '--font-orbitron',   // keeps existing Tailwind class working
+  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 })
 
-const rajdhani = Rajdhani({
+// Inter → clean, legible, modern — replaces Rajdhani
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-rajdhani',
+  variable: '--font-rajdhani',   // keeps existing Tailwind class working
   weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 })
@@ -29,11 +31,11 @@ const shareTechMono = Share_Tech_Mono({
   display: 'swap',
 })
 
-// ─── Metadata ───────────────────────────────────────────────────────────────
+// ─── Metadata ────────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
   title: 'Smit Uplenchwar — Backend & Distributed Systems Engineer',
   description:
-    'Portfolio of Smit Uplenchwar. Application Engineer at Radiant, M.S. CS University at Buffalo. Specializing in distributed systems, Go, gRPC, and cloud infrastructure.',
+    'Portfolio of Smit Uplenchwar. Application Engineer at Radiant, M.S. CS University at Buffalo. Distributed systems, Go, gRPC, and cloud infrastructure.',
   openGraph: {
     title: 'Smit Uplenchwar — Backend & Distributed Systems Engineer',
     description:
@@ -47,14 +49,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${orbitron.variable} ${rajdhani.variable} ${shareTechMono.variable}`}
+      className={`${spaceGrotesk.variable} ${inter.variable} ${shareTechMono.variable}`}
     >
       <body className="bg-background font-rajdhani antialiased relative overflow-x-hidden">
-        {/* Fixed decorative layers — rendered behind everything */}
+        {/* Vignette radial gradient — deep edges, lighter centre */}
         <GridBackground />
+        {/* Subtle star-field noise texture at ~3% opacity */}
         <ScanlineOverlay />
-
-        {/* Page content sits above the fixed layers */}
         {children}
       </body>
     </html>

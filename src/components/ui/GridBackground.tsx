@@ -1,8 +1,9 @@
-// Server component — pure decorative background layer.
+// Vignette background — dark edges, lighter deep-space centre.
+// Replaces the cyberpunk grid pattern.
 export default function GridBackground() {
   return (
     <div
-      className="grid-bg fixed inset-0 z-0 opacity-60"
+      className="vignette-bg fixed inset-0 z-0"
       aria-hidden="true"
     />
   )

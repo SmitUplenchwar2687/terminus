@@ -1,169 +1,135 @@
 'use client'
 import { useRef, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Stars } from '@react-three/drei'
 import * as THREE from 'three'
 
-// ─── Wireframe icosahedron with glowing edges ──────────────────────────────
-function WireframeIcosahedron({
-  mouseX,
-  mouseY,
-}: {
-  mouseX: number
-  mouseY: number
-}) {
-  const groupRef = useRef<THREE.Group>(null)
-
-  // Build EdgesGeometry once from the icosahedron
-  const edges = useMemo(() => {
-    const geo = new THREE.IcosahedronGeometry(2.2, 1)
-    return new THREE.EdgesGeometry(geo)
-  }, [])
+// ─── Planet ────────────────────────────────────────────────────────────────
+function Planet() {
+  const planetRef = useRef<THREE.Mesh>(null)
 
   useFrame((state) => {
-    if (!groupRef.current) return
-    const t = state.clock.elapsedTime
-
-    groupRef.current.rotation.x = t * 0.13 + mouseY * 0.15
-    groupRef.current.rotation.y = t * 0.18 + mouseX * 0.2
-
-    // Subtle pulsing scale
-    const pulse = 1 + Math.sin(t * 0.8) * 0.03
-    groupRef.current.scale.setScalar(pulse)
+    if (!planetRef.current) return
+    planetRef.current.rotation.y = state.clock.elapsedTime * 0.06
   })
 
   return (
-    <group ref={groupRef}>
-      <lineSegments geometry={edges}>
-        <lineBasicMaterial color="#00f0ff" transparent opacity={0.85} />
-      </lineSegments>
-      {/* Inner solid with very low opacity — gives depth */}
+    <group>
+      {/* Core planet */}
+      <mesh ref={planetRef}>
+        <sphereGeometry args={[2, 64, 64]} />
+        <meshStandardMaterial
+          color="#1a0845"
+          emissive="#3b0f8c"
+          emissiveIntensity={0.35}
+          roughness={0.75}
+          metalness={0.1}
+        />
+      </mesh>
+
+      {/* Inner atmosphere — soft violet haze on the backside */}
       <mesh>
-        <icosahedronGeometry args={[2.2, 1]} />
+        <sphereGeometry args={[2.25, 32, 32]} />
         <meshBasicMaterial
-          color="#001a1f"
+          color="#7c3aed"
           transparent
-          opacity={0.25}
+          opacity={0.09}
           side={THREE.BackSide}
+        />
+      </mesh>
+
+      {/* Outer haze — blue tint */}
+      <mesh>
+        <sphereGeometry args={[2.55, 32, 32]} />
+        <meshBasicMaterial
+          color="#60a5fa"
+          transparent
+          opacity={0.04}
+          side={THREE.BackSide}
+        />
+      </mesh>
+
+      {/* Orbit ring — tilted like Saturn, inner belt */}
+      <mesh rotation={[Math.PI / 2.2, 0.2, 0.15]}>
+        <ringGeometry args={[3.1, 4.0, 80]} />
+        <meshBasicMaterial
+          color="#a78bfa"
+          transparent
+          opacity={0.18}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+
+      {/* Outer diffuse ring trace */}
+      <mesh rotation={[Math.PI / 2.2, 0.2, 0.15]}>
+        <ringGeometry args={[4.1, 4.6, 80]} />
+        <meshBasicMaterial
+          color="#60a5fa"
+          transparent
+          opacity={0.07}
+          side={THREE.DoubleSide}
         />
       </mesh>
     </group>
   )
 }
 
-// ─── Floating particle field ───────────────────────────────────────────────
-function Particles({
-  count,
-  mouseX,
-  mouseY,
+// ─── Asteroids ─────────────────────────────────────────────────────────────
+const ASTEROID_DATA: Array<{
+  pos: [number, number, number]
+  scale: number
+  speed: number
+  axis: [number, number, number]
+}> = [
+  { pos: [-5.2,  1.8, -3.0], scale: 0.14, speed: 0.4,  axis: [1, 1, 0] },
+  { pos: [ 5.8, -1.2, -3.5], scale: 0.09, speed: 0.65, axis: [0, 1, 1] },
+  { pos: [-4.5, -2.5,  2.0], scale: 0.11, speed: 0.28, axis: [1, 0, 1] },
+  { pos: [ 4.0,  2.8, -1.5], scale: 0.08, speed: 0.9,  axis: [1, 1, 1] },
+]
+
+function Asteroid({
+  position,
+  scale,
+  speed,
+  axis,
 }: {
-  count: number
-  mouseX: number
-  mouseY: number
+  position: [number, number, number]
+  scale: number
+  speed: number
+  axis: [number, number, number]
 }) {
-  const pointsRef = useRef<THREE.Points>(null)
+  const ref = useRef<THREE.Mesh>(null)
+  const axisVec = useMemo(() => new THREE.Vector3(...axis).normalize(), [axis])
 
-  // Generate positions once
-  const { positions, speeds, offsets } = useMemo(() => {
-    const positions = new Float32Array(count * 3)
-    const speeds = new Float32Array(count)
-    const offsets = new Float32Array(count)
-
-    for (let i = 0; i < count; i++) {
-      positions[i * 3]     = (Math.random() - 0.5) * 22
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 22
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 18
-      speeds[i]  = 0.1 + Math.random() * 0.3
-      offsets[i] = Math.random() * Math.PI * 2
-    }
-    return { positions, speeds, offsets }
-  }, [count])
-
-  useFrame((state) => {
-    if (!pointsRef.current) return
-    const t = state.clock.elapsedTime
-
-    // Drift the whole field slowly with mouse parallax
-    pointsRef.current.rotation.y = t * 0.025 + mouseX * 0.08
-    pointsRef.current.rotation.x = mouseY * 0.06
-
-    // Animate individual particles vertically (float effect)
-    const posAttr = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute
-    for (let i = 0; i < count; i++) {
-      posAttr.setY(
-        i,
-        positions[i * 3 + 1] + Math.sin(t * speeds[i] + offsets[i]) * 0.4,
-      )
-    }
-    posAttr.needsUpdate = true
+  useFrame((_, delta) => {
+    if (!ref.current) return
+    ref.current.rotateOnAxis(axisVec, speed * delta)
   })
 
   return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        color="#00f0ff"
-        size={0.06}
-        transparent
-        opacity={0.55}
-        sizeAttenuation
+    <mesh ref={ref} position={position} scale={scale}>
+      <dodecahedronGeometry args={[1, 0]} />
+      <meshStandardMaterial
+        color="#4c1d95"
+        emissive="#2d1060"
+        emissiveIntensity={0.2}
+        roughness={0.9}
       />
-    </points>
+    </mesh>
   )
 }
 
-// ─── Secondary magenta accent particles ───────────────────────────────────
-function AccentParticles({ count }: { count: number }) {
-  const positions = useMemo(() => {
-    const arr = new Float32Array(count * 3)
-    for (let i = 0; i < count; i++) {
-      arr[i * 3]     = (Math.random() - 0.5) * 26
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 26
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 14
-    }
-    return arr
-  }, [count])
-
-  const pointsRef = useRef<THREE.Points>(null)
-
-  useFrame((state) => {
-    if (!pointsRef.current) return
-    pointsRef.current.rotation.y = -state.clock.elapsedTime * 0.015
-  })
-
-  return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-      </bufferGeometry>
-      <pointsMaterial
-        color="#ff00e5"
-        size={0.04}
-        transparent
-        opacity={0.3}
-        sizeAttenuation
-      />
-    </points>
-  )
-}
-
-// ─── Camera rig — smoothly follows mouse ──────────────────────────────────
+// ─── Camera rig — gentle mouse parallax ────────────────────────────────────
 function CameraRig({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
   const { camera } = useThree()
-  const targetX = useRef(0)
-  const targetY = useRef(0)
+  const tx = useRef(0)
+  const ty = useRef(0)
 
   useFrame(() => {
-    // Lerp toward target for smooth camera drift
-    targetX.current += (mouseX * 0.6 - targetX.current) * 0.05
-    targetY.current += (mouseY * 0.4 - targetY.current) * 0.05
-
-    camera.position.x = targetX.current
-    camera.position.y = targetY.current
+    tx.current += (mouseX * 0.7 - tx.current) * 0.04
+    ty.current += (mouseY * 0.45 - ty.current) * 0.04
+    camera.position.x = tx.current
+    camera.position.y = ty.current
     camera.lookAt(0, 0, 0)
   })
 
@@ -178,20 +144,36 @@ interface HeroSceneProps {
 }
 
 export default function HeroScene({ mouseX, mouseY, isMobile }: HeroSceneProps) {
-  const particleCount = isMobile ? 60 : 200
-  const accentCount   = isMobile ? 20 : 60
-
   return (
     <Canvas
-      camera={{ position: [0, 0, 8], fov: 60 }}
+      camera={{ position: [0, 0, 9], fov: 55 }}
       gl={{ antialias: !isMobile, alpha: true }}
       dpr={isMobile ? 1 : [1, 2]}
       style={{ background: 'transparent' }}
     >
+      {/* Lighting */}
+      <ambientLight intensity={0.15} />
+      <directionalLight position={[6, 4, 4]}  color="#c4b5fd" intensity={1.2} />
+      <pointLight      position={[-5, 3, -3]} color="#f9a8d4" intensity={0.6} />
+      <pointLight      position={[4, -4, 2]}  color="#60a5fa" intensity={0.4} />
+
+      {/* Background starfield */}
+      <Stars
+        radius={120}
+        depth={55}
+        count={isMobile ? 1000 : 2500}
+        factor={5}
+        saturation={0.3}
+        fade
+        speed={0.6}
+      />
+
       <CameraRig mouseX={mouseX} mouseY={mouseY} />
-      <WireframeIcosahedron mouseX={mouseX} mouseY={mouseY} />
-      <Particles count={particleCount} mouseX={mouseX} mouseY={mouseY} />
-      {!isMobile && <AccentParticles count={accentCount} />}
+      <Planet />
+
+      {!isMobile && ASTEROID_DATA.map((a, i) => (
+        <Asteroid key={i} position={a.pos} scale={a.scale} speed={a.speed} axis={a.axis} />
+      ))}
     </Canvas>
   )
 }

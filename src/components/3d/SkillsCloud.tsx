@@ -1,114 +1,165 @@
 'use client'
-import { useRef, useEffect, useMemo } from 'react'
-import { SKILLS, CATEGORY_COLORS } from '@/lib/constants'
-
-// Fibonacci sphere — same math as before, but returns unit-sphere coords [−1, 1]
-function fibonacciSphere(count: number) {
-  const goldenAngle = Math.PI * (3 - Math.sqrt(5))
-  return Array.from({ length: count }, (_, i) => {
-    const y = 1 - (i / (count - 1)) * 2
-    const r = Math.sqrt(Math.max(0, 1 - y * y))
-    const theta = goldenAngle * i
-    return { x: Math.cos(theta) * r, y, z: Math.sin(theta) * r }
-  })
-}
+import { useRef, useEffect } from 'react'
+import { CATEGORY_COLORS } from '@/lib/constants'
 
 /**
- * CSS 3D spherical tag cloud.
+ * Orbital ring skill cloud — 3 concentric rings of skills each rotating
+ * at a different speed, tilted to give the feel of looking at a solar
+ * system from a slight angle.
  *
- * Why not WebGL Text: Drei's <Text> uses SDF fonts loaded at runtime — they
- * render as antialiased WebGL geometry that looks blurry at typical sizes.
- * DOM text is always crisp, uses our actual fonts, and supports real
- * text-shadow glow. The sphere rotation is handled via requestAnimationFrame
- * + CSS transform on each tag.
+ * Pure CSS/DOM approach: DOM text is crisp at any resolution and supports
+ * real text-shadow glow. requestAnimationFrame drives the rotation.
  */
+
+interface RingDef {
+  label: string
+  skills: Array<{ name: string; color: string }>
+  radius: number   // px from centre
+  speed: number    // radians per frame
+  tilt: number     // degrees, perspective tilt of the ring
+  ringColor: string
+}
+
+const RINGS: RingDef[] = [
+  {
+    label: 'Languages',
+    skills: [
+      { name: 'Go',     color: CATEGORY_COLORS.language  },
+      { name: 'Python', color: CATEGORY_COLORS.language  },
+      { name: 'React',  color: CATEGORY_COLORS.frontend  },
+    ],
+    radius: 92,
+    speed:  0.0055,
+    tilt:   68,
+    ringColor: 'rgba(167,139,250,0.14)',
+  },
+  {
+    label: 'Infrastructure',
+    skills: [
+      { name: 'gRPC',       color: CATEGORY_COLORS.infrastructure },
+      { name: 'Docker',     color: CATEGORY_COLORS.infrastructure },
+      { name: 'Kubernetes', color: CATEGORY_COLORS.infrastructure },
+      { name: 'AWS',        color: CATEGORY_COLORS.infrastructure },
+      { name: 'PostgreSQL', color: CATEGORY_COLORS.database       },
+      { name: 'Redis',      color: CATEGORY_COLORS.database       },
+    ],
+    radius: 178,
+    speed:  0.0028,
+    tilt:   72,
+    ringColor: 'rgba(96,165,250,0.12)',
+  },
+  {
+    label: 'AI & Systems',
+    skills: [
+      { name: 'Kafka',          color: CATEGORY_COLORS.infrastructure },
+      { name: 'Raft Consensus', color: CATEGORY_COLORS.distributed    },
+      { name: 'LangChain',      color: CATEGORY_COLORS.ai             },
+      { name: 'Firebase',       color: CATEGORY_COLORS.database       },
+      { name: 'Git',            color: CATEGORY_COLORS.tooling        },
+    ],
+    radius: 258,
+    speed:  0.0014,
+    tilt:   75,
+    ringColor: 'rgba(244,114,182,0.10)',
+  },
+]
+
 export default function SkillsCloud() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const angleRef = useRef({ y: 0, x: 0.12 })
-  const rafRef = useRef<number>()
-
-  // Unit-sphere positions, computed once
-  const unitPositions = useMemo(() => fibonacciSphere(SKILLS.length), [])
+  const anglesRef    = useRef(RINGS.map(() => 0))
+  const rafRef       = useRef<number>()
 
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
-    const tags = Array.from(container.querySelectorAll<HTMLElement>('.skill-node'))
-
-    // Size the sphere to 45% of the container's smallest dimension
-    const getRadius = () => Math.min(container.offsetWidth, container.offsetHeight) * 0.42
+    // Collect all tag elements per ring
+    const ringEls = RINGS.map((ring) =>
+      Array.from(container.querySelectorAll<HTMLElement>(
+        `[data-ring="${ring.label}"]`
+      ))
+    )
 
     const animate = () => {
-      angleRef.current.y += 0.0035
-      angleRef.current.x += 0.0008
+      // Scale radii to container size (max 45% of the smaller dimension)
+      const W = container.offsetWidth
+      const H = container.offsetHeight
+      const scale = Math.min(W, H) / 560 // 560 is the "design radius" reference
 
-      const R = getRadius()
-      const cosY = Math.cos(angleRef.current.y)
-      const sinY = Math.sin(angleRef.current.y)
-      const cosX = Math.cos(angleRef.current.x)
-      const sinX = Math.sin(angleRef.current.x)
+      RINGS.forEach((ring, ri) => {
+        anglesRef.current[ri] += ring.speed
+        const angle  = anglesRef.current[ri]
+        const tiltRad = (ring.tilt * Math.PI) / 180
+        const R = ring.radius * scale
 
-      tags.forEach((tag, i) => {
-        const { x: ox, y: oy, z: oz } = unitPositions[i]
+        ringEls[ri].forEach((el, si) => {
+          const n = ringEls[ri].length
+          const a = angle + (si / n) * Math.PI * 2
+          const x = Math.cos(a) * R
+          // y is foreshortened by the tilt (simulates looking at ring from above)
+          const y = Math.sin(a) * R * Math.cos(tiltRad)
+          // z depth for opacity / scale cues
+          const z = Math.sin(a) // [-1, 1]
 
-        // Rotate around Y axis
-        const x1 = ox * cosY - oz * sinY
-        const z1 = ox * sinY + oz * cosY
+          const depth   = (z + 1) / 2  // [0 = far, 1 = near]
+          const opacity = 0.3 + depth * 0.7
+          const sz      = 0.7 + depth * 0.4
 
-        // Rotate around X axis
-        const y2 = oy * cosX - z1 * sinX
-        const z2 = oy * sinX + z1 * cosX
-
-        // z2 ∈ [−1, 1] → depth cues
-        const depth = (z2 + 1) / 2 // [0 = back, 1 = front]
-
-        const px = x1 * R
-        const py = y2 * R
-
-        // Perspective: front tags are bigger and fully opaque
-        const scale  = 0.65 + depth * 0.55
-        const opacity = 0.25 + depth * 0.75
-
-        tag.style.transform = `translate(-50%, -50%) translate(${px}px, ${py}px)`
-        tag.style.opacity    = opacity.toFixed(3)
-        tag.style.scale      = scale.toFixed(3)
-        tag.style.zIndex     = String(Math.round(depth * 100))
+          el.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`
+          el.style.opacity   = opacity.toFixed(3)
+          el.style.scale     = sz.toFixed(3)
+          el.style.zIndex    = String(Math.round(depth * 100))
+        })
       })
 
       rafRef.current = requestAnimationFrame(animate)
     }
 
     rafRef.current = requestAnimationFrame(animate)
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    }
-  }, [unitPositions])
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
+  }, [])
 
   return (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-      {/* The sphere container — tags are positioned absolute from its centre */}
       <div ref={containerRef} className="relative w-full h-full">
-        {SKILLS.map((skill) => (
-          <span
-            key={skill.name}
-            className="skill-node absolute left-1/2 top-1/2 font-mono whitespace-nowrap cursor-default select-none"
+        {/* Decorative ring ellipses */}
+        {RINGS.map((ring) => (
+          <div
+            key={ring.label + '-ring'}
+            className="absolute top-1/2 left-1/2 rounded-full pointer-events-none"
             style={{
-              color: CATEGORY_COLORS[skill.category],
-              textShadow: `0 0 10px ${CATEGORY_COLORS[skill.category]}cc, 0 0 20px ${CATEGORY_COLORS[skill.category]}66`,
-              letterSpacing: '0.1em',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              padding: '3px 8px',
-              // Subtle dark pill behind each tag for extra legibility
-              background: `${CATEGORY_COLORS[skill.category]}12`,
-              border: `1px solid ${CATEGORY_COLORS[skill.category]}30`,
-              borderRadius: '2px',
+              width:    ring.radius * 2,
+              height:   ring.radius * 2 * Math.cos((ring.tilt * Math.PI) / 180),
+              border:   `1px solid ${ring.ringColor}`,
+              transform: 'translate(-50%, -50%)',
             }}
-          >
-            {skill.name}
-          </span>
+            aria-hidden="true"
+          />
         ))}
+
+        {/* Skill tags */}
+        {RINGS.map((ring) =>
+          ring.skills.map((skill) => (
+            <span
+              key={skill.name}
+              data-ring={ring.label}
+              className="absolute left-1/2 top-1/2 font-mono whitespace-nowrap cursor-default select-none"
+              style={{
+                color:      skill.color,
+                textShadow: `0 0 10px ${skill.color}bb, 0 0 22px ${skill.color}55`,
+                fontSize:   '0.82rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                padding:    '3px 9px',
+                background: `${skill.color}10`,
+                border:     `1px solid ${skill.color}28`,
+                borderRadius: '4px',
+              }}
+            >
+              {skill.name}
+            </span>
+          ))
+        )}
       </div>
     </div>
   )

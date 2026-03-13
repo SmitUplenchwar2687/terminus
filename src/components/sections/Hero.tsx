@@ -104,7 +104,7 @@ export default function Hero() {
         {/* CTA */}
         <a
           href="#projects"
-          className="mt-6 inline-flex items-center gap-2 font-mono text-xs text-cyan/60 hover:text-cyan tracking-widest uppercase border border-cyan/20 hover:border-cyan/50 px-5 py-2.5 rounded-sm transition-all duration-300 hover:shadow-[0_0_15px_rgba(0,240,255,0.2)]"
+          className="mt-6 inline-flex items-center gap-2 font-mono text-xs text-cyan/60 hover:text-cyan tracking-widest uppercase border border-cyan/20 hover:border-cyan/50 px-5 py-2.5 rounded-md transition-all duration-300 hover:shadow-[0_0_18px_rgba(124,58,237,0.25)]"
         >
           View My Work
           <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
@@ -120,7 +120,7 @@ export default function Hero() {
         </span>
         <div className="flex flex-col items-center gap-1 animate-scroll-bounce">
           <div className="w-px h-6 bg-gradient-to-b from-cyan/40 to-transparent" />
-          <svg width="8" height="5" viewBox="0 0 8 5" fill="#00f0ff" opacity="0.4">
+          <svg width="8" height="5" viewBox="0 0 8 5" fill="#a78bfa" opacity="0.5">
             <path d="M0 0l4 5 4-5H0z" />
           </svg>
         </div>
@@ -130,7 +130,7 @@ export default function Hero() {
       <div
         className="absolute bottom-0 left-0 right-0 h-32 z-[5] pointer-events-none"
         style={{
-          background: 'linear-gradient(to bottom, transparent, #0a0a0f)',
+          background: 'linear-gradient(to bottom, transparent, #050510)',
         }}
         aria-hidden="true"
       />

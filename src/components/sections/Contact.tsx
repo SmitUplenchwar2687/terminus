@@ -49,7 +49,7 @@ export default function Contact() {
       <div
         className="absolute top-0 left-0 right-0 h-px pointer-events-none"
         style={{
-          background: 'linear-gradient(to right, transparent, rgba(0,240,255,0.4), transparent)',
+          background: 'linear-gradient(to right, transparent, rgba(124,58,237,0.35), transparent)',
         }}
         aria-hidden="true"
       />

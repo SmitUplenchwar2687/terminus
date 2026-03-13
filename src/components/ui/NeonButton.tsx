@@ -9,10 +9,26 @@ interface NeonButtonProps {
   external?: boolean
 }
 
-/**
- * Neon-outlined anchor button with hover glow pulse.
- * Uses framer-motion for the scale + glow transition.
- */
+// Cosmic color map — variant names kept identical to avoid changing callers
+const VARIANTS = {
+  cyan: {
+    border:     'rgba(124, 58, 237, 0.55)',
+    text:       '#c4b5fd',
+    bg:         'rgba(124, 58, 237, 0.06)',
+    glowIdle:   'rgba(124, 58, 237, 0.25)',
+    glowHover:  'rgba(124, 58, 237, 0.55)',
+    glow2:      'rgba(96, 165, 250, 0.15)',
+  },
+  magenta: {
+    border:     'rgba(244, 114, 182, 0.55)',
+    text:       '#f9a8d4',
+    bg:         'rgba(244, 114, 182, 0.06)',
+    glowIdle:   'rgba(244, 114, 182, 0.25)',
+    glowHover:  'rgba(244, 114, 182, 0.55)',
+    glow2:      'rgba(196, 132, 252, 0.15)',
+  },
+} as const
+
 export default function NeonButton({
   href,
   label,
@@ -20,36 +36,34 @@ export default function NeonButton({
   icon,
   external = true,
 }: NeonButtonProps) {
-  const isCyan = variant === 'cyan'
-
-  const borderColor = isCyan ? 'rgba(0,240,255,0.6)' : 'rgba(255,0,229,0.6)'
-  const glowColor = isCyan ? '#00f0ff' : '#ff00e5'
-  const textColor = isCyan ? '#00f0ff' : '#ff00e5'
+  const v = VARIANTS[variant]
 
   return (
     <motion.a
       href={href}
       target={external ? '_blank' : undefined}
       rel={external ? 'noopener noreferrer' : undefined}
-      whileHover={{ scale: 1.05 }}
+      whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.97 }}
-      className="relative inline-flex items-center gap-2 px-6 py-3 rounded-sm font-mono text-sm tracking-widest uppercase transition-all duration-300"
+      className="relative inline-flex items-center gap-2.5 px-6 py-3 rounded-md font-orbitron text-xs tracking-widest uppercase transition-all duration-400"
       style={{
-        border: `1px solid ${borderColor}`,
-        color: textColor,
-        background: isCyan ? 'rgba(0,240,255,0.04)' : 'rgba(255,0,229,0.04)',
-        boxShadow: `0 0 8px ${glowColor}30, inset 0 0 8px ${glowColor}10`,
+        border:     `1px solid ${v.border}`,
+        color:      v.text,
+        background: v.bg,
+        boxShadow:  `0 0 10px ${v.glowIdle}, inset 0 0 10px ${v.glowIdle}30`,
       }}
       onMouseEnter={(e) => {
-        ;(e.currentTarget as HTMLElement).style.boxShadow =
-          `0 0 20px ${glowColor}60, 0 0 40px ${glowColor}30, inset 0 0 15px ${glowColor}15`
+        const el = e.currentTarget as HTMLElement
+        el.style.boxShadow = `0 0 22px ${v.glowHover}, 0 0 45px ${v.glow2}, inset 0 0 18px ${v.glowHover}20`
+        el.style.borderColor = v.glowHover
       }}
       onMouseLeave={(e) => {
-        ;(e.currentTarget as HTMLElement).style.boxShadow =
-          `0 0 8px ${glowColor}30, inset 0 0 8px ${glowColor}10`
+        const el = e.currentTarget as HTMLElement
+        el.style.boxShadow = `0 0 10px ${v.glowIdle}, inset 0 0 10px ${v.glowIdle}30`
+        el.style.borderColor = v.border
       }}
     >
-      {icon && <span className="flex-shrink-0">{icon}</span>}
+      {icon && <span className="flex-shrink-0 opacity-80">{icon}</span>}
       {label}
     </motion.a>
   )

@@ -9,64 +9,72 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#0a0a0f',
+        background: '#050510',
+        // Override "cyan" to map to the primary cosmic purple —
+        // all existing text-cyan / border-cyan / etc. classes retheme automatically.
         cyan: {
-          DEFAULT: '#00f0ff',
-          500: '#00f0ff',
+          DEFAULT: '#7c3aed',
+          500: '#7c3aed',
         },
+        // Override "magenta" → nebula pink
         magenta: {
-          DEFAULT: '#ff00e5',
-          500: '#ff00e5',
+          DEFAULT: '#f472b6',
+          500: '#f472b6',
         },
-        'electric-blue': {
-          DEFAULT: '#0040ff',
-          500: '#0040ff',
+        // New accent
+        'cosmic-blue': {
+          DEFAULT: '#60a5fa',
+          500: '#60a5fa',
+        },
+        'cosmic-purple': {
+          DEFAULT: '#7c3aed',
+          light: '#a78bfa',
+          dim: 'rgba(124,58,237,0.15)',
         },
       },
       fontFamily: {
+        // Variable names unchanged — section components keep working.
+        // Space Grotesk replaces Orbitron; Inter replaces Rajdhani.
         orbitron: ['var(--font-orbitron)', 'sans-serif'],
         rajdhani: ['var(--font-rajdhani)', 'sans-serif'],
         mono: ['var(--font-share-tech-mono)', 'monospace'],
       },
       keyframes: {
-        'glitch-before': {
-          '0%, 89%, 100%': { transform: 'translateX(0)', opacity: '1' },
-          '90%': { transform: 'translateX(-4px)', opacity: '0.8' },
-          '92%': { transform: 'translateX(4px)', opacity: '0.9' },
-          '94%': { transform: 'translateX(-2px)' },
-          '96%': { transform: 'translateX(0)' },
+        // ── Shimmer — traveling highlight across text ──────────────────────
+        'shimmer-travel': {
+          '0%':   { backgroundPosition: '-200% center' },
+          '100%': { backgroundPosition: '200% center' },
         },
-        'glitch-after': {
-          '0%, 84%, 100%': { transform: 'translateX(0)', opacity: '1' },
-          '85%': { transform: 'translateX(3px)', opacity: '0.8' },
-          '87%': { transform: 'translateX(-3px)', opacity: '0.9' },
-          '89%': { transform: 'translateX(1px)' },
-          '91%': { transform: 'translateX(0)' },
+        // ── Gentle float ───────────────────────────────────────────────────
+        'cosmic-float': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%':       { transform: 'translateY(-8px)' },
         },
-        'neon-pulse': {
+        // ── Slow pulse for glow rings ──────────────────────────────────────
+        'glow-pulse': {
           '0%, 100%': {
-            boxShadow: '0 0 5px #00f0ff, 0 0 10px #00f0ff, inset 0 0 5px rgba(0,240,255,0.1)',
+            boxShadow: '0 0 8px rgba(124,58,237,0.4), 0 0 20px rgba(124,58,237,0.2), inset 0 0 8px rgba(124,58,237,0.06)',
           },
           '50%': {
-            boxShadow:
-              '0 0 20px #00f0ff, 0 0 40px #00f0ff, 0 0 60px rgba(0,240,255,0.4), inset 0 0 10px rgba(0,240,255,0.2)',
+            boxShadow: '0 0 20px rgba(124,58,237,0.7), 0 0 40px rgba(124,58,237,0.35), 0 0 60px rgba(96,165,250,0.2), inset 0 0 15px rgba(124,58,237,0.12)',
           },
         },
         'scroll-bounce': {
           '0%, 100%': { transform: 'translateY(0)', opacity: '1' },
-          '50%': { transform: 'translateY(8px)', opacity: '0.5' },
+          '50%':       { transform: 'translateY(8px)', opacity: '0.5' },
         },
-        flicker: {
-          '0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%': { opacity: '1' },
-          '20%, 21.999%, 63%, 63.999%, 65%, 69.999%': { opacity: '0.4' },
+        // ── Twinkle for star accents ───────────────────────────────────────
+        twinkle: {
+          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+          '50%':       { opacity: '0.3', transform: 'scale(0.85)' },
         },
       },
       animation: {
-        'glitch-before': 'glitch-before 3s infinite',
-        'glitch-after': 'glitch-after 3s infinite',
-        'neon-pulse': 'neon-pulse 2s ease-in-out infinite',
-        'scroll-bounce': 'scroll-bounce 1.5s ease-in-out infinite',
-        flicker: 'flicker 4s linear infinite',
+        'shimmer-travel': 'shimmer-travel 4s linear infinite',
+        'cosmic-float':   'cosmic-float 6s ease-in-out infinite',
+        'glow-pulse':     'glow-pulse 3s ease-in-out infinite',
+        'scroll-bounce':  'scroll-bounce 1.8s ease-in-out infinite',
+        twinkle:          'twinkle 3s ease-in-out infinite',
       },
     },
   },

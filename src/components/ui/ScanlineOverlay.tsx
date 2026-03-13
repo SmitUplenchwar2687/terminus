@@ -1,10 +1,10 @@
-// Server component — no hooks needed, just a pure DOM overlay.
+// Subtle star-field noise texture at ~3% opacity.
+// Replaces the CRT scanline overlay.
 export default function ScanlineOverlay() {
   return (
     <div
-      className="scanlines fixed inset-0 z-50"
+      className="cosmic-noise fixed inset-0 z-50"
       aria-hidden="true"
-      style={{ mixBlendMode: 'overlay' }}
     />
   )
 }
