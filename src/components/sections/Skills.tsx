@@ -56,9 +56,9 @@ export default function Skills() {
             alignItems: 'center',
             gap: '0.5rem',
           }}>
-            <span style={{ color: '#1a1a1a' }}>●</span>
-            <span style={{ color: '#1e1e1e' }}>●</span>
-            <span style={{ color: '#222' }}>●</span>
+            <span style={{ color: '#ff5f57', opacity: 0.5 }}>●</span>
+            <span style={{ color: '#febc2e', opacity: 0.5 }}>●</span>
+            <span style={{ color: '#28c840', opacity: 0.5 }}>●</span>
             <span style={{ marginLeft: '0.5rem' }}>categories</span>
           </div>
 

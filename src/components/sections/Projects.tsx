@@ -3,18 +3,24 @@ import { useRef, useState } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { PROJECTS } from '@/lib/constants'
 import { fadeUp, staggerContainer } from '@/lib/motion'
+import type { Project } from '@/lib/types'
+import ProjectModal from '@/components/ui/ProjectModal'
 
-function ProjectRow({ project }: { project: (typeof PROJECTS)[0] }) {
+function ProjectRow({
+  project,
+  onClick,
+}: {
+  project: Project
+  onClick: () => void
+}) {
   const [hovered, setHovered] = useState(false)
 
   return (
-    <motion.a
-      href={project.githubUrl}
-      target="_blank"
-      rel="noopener noreferrer"
+    <motion.div
       variants={fadeUp}
-      className="project-row block"
-      style={{ textDecoration: 'none' }}
+      className="project-row"
+      style={{ cursor: 'pointer' }}
+      onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       data-cursor-grow="true"
@@ -42,11 +48,12 @@ function ProjectRow({ project }: { project: (typeof PROJECTS)[0] }) {
         <span style={{
           fontFamily: 'var(--font-jetbrains-mono)',
           fontSize: '0.78rem',
-          color: '#444',
+          color: hovered ? '#00f0ff' : '#444',
           textAlign: 'right',
           whiteSpace: 'nowrap',
+          transition: 'color 0.25s',
         }}>
-          {project.tags.join(' · ')}
+          {hovered ? '↗' : project.tags.join(' · ')}
         </span>
       </div>
 
@@ -70,32 +77,37 @@ function ProjectRow({ project }: { project: (typeof PROJECTS)[0] }) {
           </motion.p>
         )}
       </AnimatePresence>
-    </motion.a>
+    </motion.div>
   )
 }
 
 export default function Projects() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
+  const [activeProject, setActiveProject] = useState<Project | null>(null)
 
   return (
-    <section id="projects" className="py-32">
-      <div className="section-shell" ref={ref}>
-        <div className="terminal-header">
-          <span className="terminal-header-text">{'// 03 — PROJECTS'}</span>
-          <div className="terminal-header-line" />
-        </div>
+    <>
+      <section id="projects" className="py-32">
+        <div className="section-shell" ref={ref}>
+          <div className="terminal-header">
+            <span className="terminal-header-text">{'// 03 — PROJECTS'}</span>
+            <div className="terminal-header-line" />
+          </div>
 
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-        >
-          {PROJECTS.map((p) => (
-            <ProjectRow key={p.id} project={p} />
-          ))}
-        </motion.div>
-      </div>
-    </section>
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
+          >
+            {PROJECTS.map((p) => (
+              <ProjectRow key={p.id} project={p} onClick={() => setActiveProject(p)} />
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />
+    </>
   )
 }

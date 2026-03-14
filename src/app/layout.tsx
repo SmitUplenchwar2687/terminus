@@ -10,8 +10,23 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://terminus-smit.vercel.app'),
   title: 'Smit Uplenchwar — Backend Engineer',
-  description: 'Backend & Distributed Systems Engineer specializing in high-throughput systems, distributed infrastructure, and backend platforms.',
+  description: 'Backend & Distributed Systems Engineer. 4+ years building high-throughput distributed systems in Go and Python. M.S. Computer Science, University at Buffalo.',
+  openGraph: {
+    title: 'Smit Uplenchwar — Backend Engineer',
+    description: 'Backend & Distributed Systems Engineer. 4+ years building high-throughput distributed systems in Go and Python.',
+    url: 'https://terminus-smit.vercel.app',
+    siteName: 'Smit Uplenchwar',
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Smit Uplenchwar — Backend Engineer' }],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Smit Uplenchwar — Backend Engineer',
+    description: 'Backend & Distributed Systems Engineer. Go, Python, distributed systems.',
+    images: ['/og.png'],
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

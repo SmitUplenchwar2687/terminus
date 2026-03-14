@@ -131,12 +131,23 @@ body::before {
 .contact-link {
   font-family: var(--font-jetbrains-mono), monospace;
   font-size: 0.88rem;
-  color: #e0e0e0;
+  color: #555;
   text-decoration: none;
-  transition: color 0.2s ease, transform 0.2s ease;
-  display: inline-block;
+  transition: color 0.2s ease, transform 0.22s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
-.contact-link:hover { color: #00f0ff; transform: translateX(4px); }
+.contact-link::before {
+  content: '→';
+  font-size: 0.75rem;
+  color: #00f0ff;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.2s ease, transform 0.22s ease;
+}
+.contact-link:hover { color: #00f0ff; transform: translateX(10px); }
+.contact-link:hover::before { opacity: 1; transform: translateX(0); }
 
 /* Metric number */
 .metric-number {
@@ -163,4 +174,52 @@ body::before {
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* AnimatedSignature */
+@keyframes sig-reveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0%   0 0); }
+}
+@keyframes sig-line {
+  from { left: 0%;   opacity: 1; }
+  96%  {             opacity: 1; }
+  to   { left: 100%; opacity: 0; }
+}
+
+/* BootSequence cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Project modal responsive grid */
+@media (max-width: 600px) {
+  .modal-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .modal-grid > div:last-child {
+    order: -1;
+    height: 200px !important;
+  }
+}
+
+/* rm -rf / page glitch */
+@keyframes page-glitch {
+  0%   { transform: translate(0);              filter: none; }
+  8%   { transform: translate(-5px, 3px)  skew(-1deg);   filter: hue-rotate(80deg); }
+  16%  { transform: translate(5px, -3px)  skew(1deg);    filter: hue-rotate(160deg) saturate(180%); }
+  25%  { transform: translate(-3px, 5px);               filter: invert(0.15); }
+  33%  { transform: translate(5px, -4px)  skew(-2deg);   filter: hue-rotate(240deg); }
+  41%  { transform: translate(-5px, 4px);               filter: hue-rotate(320deg) invert(0.1); }
+  50%  { transform: translate(4px, -4px)  skew(1.5deg);  filter: hue-rotate(40deg); }
+  58%  { transform: translate(-4px, 3px);               filter: invert(0.18); }
+  66%  { transform: translate(4px, -3px)  skew(-1deg);   filter: hue-rotate(120deg); }
+  75%  { transform: translate(-5px, 5px);               filter: hue-rotate(200deg) saturate(200%); }
+  83%  { transform: translate(3px, -5px)  skew(2deg);    filter: hue-rotate(280deg); }
+  91%  { transform: translate(-3px, 3px);               filter: hue-rotate(350deg); }
+  100% { transform: translate(0);              filter: none; }
+}
+.page-glitch {
+  animation: page-glitch 1.5s linear forwards;
 }

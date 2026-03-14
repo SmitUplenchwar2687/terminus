@@ -81,6 +81,7 @@ export default function Contact() {
           letterSpacing: '0.12em',
         }}>
           © 2026 Smit Uplenchwar
+          <span style={{ marginLeft: '2rem', color: '#111' }}>{'// try: sudo hire smit'}</span>
         </div>
       </div>
     </section>
