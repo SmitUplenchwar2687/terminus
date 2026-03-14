@@ -2,18 +2,35 @@
 import { useRef, useState } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { EXPERIENCE } from '@/lib/constants'
-import { fadeUp } from '@/lib/motion'
+import { staggerContainer, fadeUp } from '@/lib/motion'
+
+const HASHES = ['a3f82c1', '7b91de4', '2c45a8f', '9e17fa3', '4d6c8b2']
 
 const EDUCATION = [
   { degree: 'M.S. Computer Science & Engineering', school: 'University at Buffalo, SUNY', period: 'Aug 2024 — Dec 2025' },
   { degree: 'B.Tech Computer Science & Engineering', school: 'IIIT Pune', period: 'Aug 2018 — Aug 2022' },
 ]
 
+// Bold numbers/metrics in bullet text
+function highlightMetrics(text: string) {
+  const parts = text.split(/(~?\d+(?:\.\d+)?[×x%k+]+|\d+\+)/g)
+  return parts.map((part, i) =>
+    /^(~?\d+(?:\.\d+)?[×x%k+]+|\d+\+)$/.test(part)
+      ? <span key={i} style={{ color: '#00f0ff', fontWeight: 600 }}>{part}</span>
+      : part
+  )
+}
+
 export default function Experience() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
-  const [activeId, setActiveId] = useState(EXPERIENCE[0].id)
-  const activeJob = EXPERIENCE.find((j) => j.id === activeId)!
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(EXPERIENCE.map(j => j.id)))
+
+  const toggle = (id: string) => setExpandedIds(prev => {
+    const next = new Set(prev)
+    next.has(id) ? next.delete(id) : next.add(id)
+    return next
+  })
 
   return (
     <section id="experience" className="py-32">
@@ -23,236 +40,269 @@ export default function Experience() {
           <div className="terminal-header-line" />
         </div>
 
+        {/* Git command prompt — flavor text, dimmed */}
         <motion.div
           variants={fadeUp}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-        >
-          {/* Split panel */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '220px 1fr',
-            gap: 0,
-            border: '1px solid #1a1a1a',
-            minHeight: '420px',
+          style={{
+            fontFamily: 'var(--font-jetbrains-mono)',
+            fontSize: '0.72rem',
+            color: '#333',
+            marginBottom: '2.5rem',
+            letterSpacing: '0.06em',
           }}
-            className="flex-col md:grid"
-          >
-            {/* LEFT — company list */}
-            <div style={{
-              borderRight: '1px solid #1a1a1a',
-              padding: '0',
-              position: 'relative',
-            }}>
-              {/* Terminal-style title bar */}
-              <div style={{
-                padding: '0.65rem 1rem',
-                borderBottom: '1px solid #1a1a1a',
-                fontFamily: 'var(--font-jetbrains-mono)',
-                fontSize: '0.6rem',
-                letterSpacing: '0.18em',
-                color: '#2a2a2a',
-                textTransform: 'uppercase',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-              }}>
-                <span style={{ color: '#1a1a1a' }}>●</span>
-                <span style={{ color: '#1e1e1e' }}>●</span>
-                <span style={{ color: '#222' }}>●</span>
-                <span style={{ marginLeft: '0.5rem' }}>companies</span>
-              </div>
+        >
+          <span style={{ color: '#333' }}>smit@terminus</span>
+          <span style={{ color: '#222' }}>:</span>
+          <span style={{ color: '#00f0ff', opacity: 0.25 }}>~/career</span>
+          <span style={{ color: '#222' }}>$ </span>
+          <span style={{ color: '#333' }}>git log --graph --oneline --decorate</span>
+        </motion.div>
 
-              {EXPERIENCE.map((job, i) => {
-                const isActive = job.id === activeId
-                return (
-                  <button
-                    key={job.id}
-                    type="button"
-                    onClick={() => setActiveId(job.id)}
-                    data-cursor-grow="true"
-                    style={{
-                      width: '100%',
-                      background: isActive ? 'rgba(0,240,255,0.04)' : 'transparent',
-                      border: 'none',
-                      borderBottom: '1px solid #111',
-                      borderLeft: isActive ? '2px solid #00f0ff' : '2px solid transparent',
-                      padding: '0.9rem 1rem',
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      transition: 'background 0.2s, border-color 0.2s',
-                    }}
-                  >
-                    <div style={{
-                      fontFamily: 'var(--font-jetbrains-mono)',
-                      fontSize: '0.6rem',
-                      letterSpacing: '0.2em',
-                      color: isActive ? '#00f0ff' : '#2a2a2a',
-                      marginBottom: '0.3rem',
-                      transition: 'color 0.2s',
-                    }}>
-                      {String(i + 1).padStart(2, '0')}
-                    </div>
-                    <div style={{
-                      fontFamily: 'Clash Display, sans-serif',
-                      fontSize: '0.88rem',
-                      fontWeight: 700,
-                      color: isActive ? '#ffffff' : '#555',
-                      transition: 'color 0.2s',
-                      lineHeight: 1.2,
-                    }}>
-                      {job.company}
-                    </div>
-                    <div style={{
-                      fontFamily: 'var(--font-jetbrains-mono)',
-                      fontSize: '0.58rem',
-                      color: isActive ? '#444' : '#2a2a2a',
-                      marginTop: '0.25rem',
-                      letterSpacing: '0.06em',
-                      transition: 'color 0.2s',
-                    }}>
-                      {job.period.split('—')[0].trim()}
-                    </div>
-                  </button>
-                )
-              })}
-            </div>
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          style={{ display: 'flex', flexDirection: 'column', gap: '3.75rem' }}
+        >
+          {EXPERIENCE.map((job, i) => {
+            const hash = HASHES[i]
+            const isExpanded = expandedIds.has(job.id)
 
-            {/* RIGHT — terminal detail panel */}
-            <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              {/* Tab bar */}
-              <div style={{
-                padding: '0.65rem 1.25rem',
-                borderBottom: '1px solid #1a1a1a',
-                fontFamily: 'var(--font-jetbrains-mono)',
-                fontSize: '0.62rem',
-                letterSpacing: '0.14em',
-                color: '#00f0ff',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-              }}>
-                <span style={{ color: '#333' }}>$</span>
-                <span>cat {activeJob.company.toLowerCase().replace(/\s+/g, '-')}.log</span>
-                {activeJob.current && (
-                  <span style={{
-                    marginLeft: 'auto',
-                    border: '1px solid rgba(0,240,255,0.25)',
-                    padding: '0.1rem 0.45rem',
-                    fontSize: '0.55rem',
-                    letterSpacing: '0.18em',
-                    color: '#00f0ff',
-                    textTransform: 'uppercase',
-                  }}>
-                    active
-                  </span>
-                )}
-              </div>
-
-              {/* Content */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeJob.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                  style={{ padding: '1.5rem 1.5rem', flex: 1, overflow: 'auto' }}
-                >
-                  {/* Metadata block */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '5rem 1fr',
-                    gap: '0.25rem 1rem',
-                    marginBottom: '1.5rem',
-                    fontFamily: 'var(--font-jetbrains-mono)',
-                    fontSize: '0.72rem',
-                  }}>
-                    {[
-                      ['role', activeJob.role],
-                      ['period', activeJob.period],
-                    ].map(([k, v]) => (
-                      <>
-                        <span key={k + '-key'} style={{ color: '#333', letterSpacing: '0.1em' }}>{k}</span>
-                        <span key={k + '-val'} style={{ color: '#888' }}>{v}</span>
-                      </>
-                    ))}
-                  </div>
-
-                  {/* Divider */}
-                  <div style={{
-                    height: '1px',
-                    background: '#111',
-                    marginBottom: '1.25rem',
-                  }} />
-
-                  {/* Bullets */}
-                  <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-                    {activeJob.bullets.map((bullet, i) => (
-                      <li key={i} style={{
-                        display: 'grid',
-                        gridTemplateColumns: '1.25rem 1fr',
-                        gap: '0.5rem',
-                        fontFamily: 'Satoshi, sans-serif',
-                        fontSize: '0.88rem',
-                        lineHeight: 1.75,
-                        color: '#666',
-                      }}>
-                        <span style={{ color: '#00f0ff', fontFamily: 'var(--font-jetbrains-mono)', fontSize: '0.7rem', paddingTop: '0.3rem' }}>›</span>
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {/* Education */}
-          <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid #111' }}>
-            <div style={{
-              fontFamily: 'var(--font-jetbrains-mono)',
-              fontSize: '0.6rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              color: '#2a2a2a',
-              marginBottom: '1.5rem',
-            }}>
-              Education
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              {EDUCATION.map((edu) => (
-                <div key={edu.school} style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr auto',
-                  gap: '1rem',
+            return (
+              <motion.div
+                key={job.id}
+                variants={fadeUp}
+                style={{
+                  paddingLeft: '1.25rem',
+                  borderLeft: '2px solid rgba(0,240,255,0.10)',
+                }}
+              >
+                {/* Commit hash row — git flavor, secondary */}
+                <div style={{
+                  display: 'flex',
                   alignItems: 'baseline',
+                  gap: '0.5rem',
+                  marginBottom: '0.85rem',
+                  flexWrap: 'wrap',
                 }}>
-                  <div>
-                    <div style={{ fontFamily: 'Satoshi, sans-serif', fontSize: '0.92rem', color: '#e0e0e0' }}>
-                      {edu.degree}
-                    </div>
-                    <div style={{
+                  <span style={{
+                    fontFamily: 'var(--font-jetbrains-mono)',
+                    fontSize: '0.75rem',
+                    color: job.current ? '#00f0ff' : '#2a2a2a',
+                  }}>*</span>
+
+                  <span style={{
+                    fontFamily: 'var(--font-jetbrains-mono)',
+                    fontSize: '0.68rem',
+                    color: '#00f0ff',
+                    opacity: job.current ? 0.7 : 0.25,
+                  }}>{hash}</span>
+
+                  {job.current && (
+                    <span style={{
                       fontFamily: 'var(--font-jetbrains-mono)',
-                      fontSize: '0.68rem',
-                      color: '#333',
-                      marginTop: '0.2rem',
-                      letterSpacing: '0.08em',
-                    }}>
-                      {edu.school}
-                    </div>
-                  </div>
+                      fontSize: '0.62rem',
+                      color: '#00f0ff',
+                      opacity: 0.6,
+                    }}>(HEAD → main)</span>
+                  )}
+
+                  <span style={{
+                    fontFamily: 'var(--font-jetbrains-mono)',
+                    fontSize: '0.62rem',
+                    color: '#2e2e2e',
+                  }}>[{job.period.split('—')[0].trim()}]</span>
+
                   <span style={{
                     fontFamily: 'var(--font-jetbrains-mono)',
                     fontSize: '0.65rem',
-                    color: '#2a2a2a',
-                    whiteSpace: 'nowrap',
+                    color: '#2e2e2e',
+                    flex: 1,
+                    minWidth: 0,
                   }}>
-                    {edu.period}
+                    <span style={{ color: '#333' }}>{job.company.toLowerCase().replace(/\s+/g, '-')}</span>
+                    <span style={{ color: '#222' }}>: </span>
+                    <span style={{ color: '#3a3a3a' }}>{job.summary}</span>
                   </span>
                 </div>
-              ))}
-            </div>
+
+                {/* Primary header — company + date */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  justifyContent: 'space-between',
+                  gap: '1rem',
+                  marginBottom: '0.4rem',
+                  flexWrap: 'wrap',
+                }}>
+                  <div style={{
+                    fontFamily: 'Clash Display, sans-serif',
+                    fontSize: '1.5rem',
+                    fontWeight: 700,
+                    color: '#e0e0e0',
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                    lineHeight: 1.1,
+                  }}>
+                    {job.company}
+                  </div>
+
+                  {/* Date + PRESENT badge */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexShrink: 0, paddingTop: '0.35rem' }}>
+                    <span style={{
+                      fontFamily: 'var(--font-jetbrains-mono)',
+                      fontSize: '0.78rem',
+                      color: '#444',
+                      whiteSpace: 'nowrap',
+                    }}>{job.period}</span>
+                    {job.current && (
+                      <span style={{
+                        fontFamily: 'var(--font-jetbrains-mono)',
+                        fontSize: '0.55rem',
+                        letterSpacing: '0.14em',
+                        color: '#00f0ff',
+                        border: '1px solid rgba(0,240,255,0.35)',
+                        padding: '0.15rem 0.45rem',
+                        whiteSpace: 'nowrap',
+                      }}>PRESENT</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Role title */}
+                <div style={{
+                  fontFamily: 'Satoshi, sans-serif',
+                  fontSize: '1rem',
+                  color: '#00f0ff',
+                  marginBottom: '1rem',
+                  opacity: 0.9,
+                }}>
+                  {job.role}
+                </div>
+
+                {/* Expand/collapse toggle */}
+                <button
+                  type="button"
+                  onClick={() => toggle(job.id)}
+                  data-cursor-grow="true"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    marginBottom: isExpanded ? '0.75rem' : 0,
+                  }}
+                >
+                  <span style={{
+                    fontFamily: 'var(--font-jetbrains-mono)',
+                    fontSize: '0.6rem',
+                    color: '#00f0ff',
+                    opacity: 0.5,
+                  }}>@@ impact @@</span>
+                  <span style={{
+                    fontFamily: 'var(--font-jetbrains-mono)',
+                    fontSize: '0.6rem',
+                    color: isExpanded ? '#00f0ff' : '#2a2a2a',
+                    transition: 'color 0.2s',
+                  }}>{isExpanded ? '[-]' : '[+]'}</span>
+                </button>
+
+                {/* Expandable bullets */}
+                <AnimatePresence initial={false}>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.22, ease: 'easeOut' }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                        {job.bullets.map((bullet, bi) => (
+                          <div key={bi} style={{
+                            display: 'grid',
+                            gridTemplateColumns: '1rem 1fr',
+                            gap: '0.4rem',
+                            padding: '0.2rem 0',
+                            fontFamily: 'Satoshi, sans-serif',
+                            fontSize: '0.875rem',
+                            lineHeight: 1.75,
+                            color: '#888',
+                          }}>
+                            <span style={{
+                              fontFamily: 'var(--font-jetbrains-mono)',
+                              fontSize: '0.75rem',
+                              color: '#00f0ff',
+                              paddingTop: '0.24rem',
+                              flexShrink: 0,
+                            }}>+</span>
+                            <span>{highlightMetrics(bullet)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )
+          })}
+        </motion.div>
+
+        {/* Education */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid #111' }}
+        >
+          <div style={{
+            fontFamily: 'var(--font-jetbrains-mono)',
+            fontSize: '0.58rem',
+            letterSpacing: '0.22em',
+            textTransform: 'uppercase',
+            color: '#2a2a2a',
+            marginBottom: '1.5rem',
+          }}>
+            Education
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {EDUCATION.map((edu) => (
+              <div key={edu.school} style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr auto',
+                gap: '1rem',
+                alignItems: 'baseline',
+              }}>
+                <div>
+                  <div style={{ fontFamily: 'Satoshi, sans-serif', fontSize: '0.95rem', color: '#e0e0e0' }}>
+                    {edu.degree}
+                  </div>
+                  <div style={{
+                    fontFamily: 'var(--font-jetbrains-mono)',
+                    fontSize: '0.68rem',
+                    color: '#333',
+                    marginTop: '0.2rem',
+                    letterSpacing: '0.08em',
+                  }}>
+                    {edu.school}
+                  </div>
+                </div>
+                <span style={{
+                  fontFamily: 'var(--font-jetbrains-mono)',
+                  fontSize: '0.65rem',
+                  color: '#333',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {edu.period}
+                </span>
+              </div>
+            ))}
           </div>
         </motion.div>
       </div>

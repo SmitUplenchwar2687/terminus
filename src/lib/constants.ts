@@ -40,6 +40,7 @@ export const EXPERIENCE = [
     company: 'Radiant',
     period: 'Mar 2026 — Present',
     current: true,
+    summary: 'fault-tolerant event-driven backend, distributed systems',
     bullets: [
       'Designed fault-tolerant data ingestion pipelines with idempotency guarantees, exponential backoff, and DLQs — reducing pipeline failures by ~30% under peak load.',
       'Built event-driven backend services in Python and Go processing high-volume ERP streams with at-least-once delivery, improving data freshness SLAs by ~40%.',
@@ -53,6 +54,7 @@ export const EXPERIENCE = [
     company: 'Redprint',
     period: 'Jun 2025 — Mar 2026',
     current: false,
+    summary: 'high-volume API backend, PostgreSQL/Redis data layer',
     bullets: [
       'Built Go and Python backend services handling high-volume API traffic for workout tracking, social feeds, and leaderboard systems — improving request latency by 38%.',
       'Designed scalable data access layers with PostgreSQL and Redis caching, reducing database load by 45% under peak usage.',
@@ -67,6 +69,7 @@ export const EXPERIENCE = [
     company: 'o9 Solutions',
     period: 'Feb 2024 — Aug 2024',
     current: false,
+    summary: 'supply chain microservices, Kafka/Airflow pipelines, 100k+ DAU',
     bullets: [
       'Developed backend microservices in Python and Node.js powering enterprise supply chain platforms used by 100k+ daily users.',
       'Designed resilient ingestion pipelines using Kafka and Airflow, improving data freshness SLAs by 50%.',
@@ -80,6 +83,7 @@ export const EXPERIENCE = [
     company: 'o9 Solutions',
     period: 'Feb 2022 — Feb 2024',
     current: false,
+    summary: 'enterprise backend APIs, rate-limiting, Redis caching, 100+ deployments',
     bullets: [
       'Built and maintained Python-based backend services supporting internal supply planning tools across 100+ enterprise deployments.',
       'Designed scalable APIs backed by PostgreSQL, Redis, and S3, improving system throughput by 40%.',
@@ -93,6 +97,7 @@ export const EXPERIENCE = [
     company: 'Tegasys Solutions',
     period: 'Jul 2020 — Feb 2022',
     current: false,
+    summary: 'Go backend APIs, SLO monitoring, alerting pipelines',
     bullets: [
       'Developed backend APIs in Go supporting internal business workflows, improving response times by 33%.',
       'Designed SLO-based service monitoring with high-cardinality metrics and structured logs, reducing MTTD of production failures by 45%.',
