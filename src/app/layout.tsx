@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import NoirCursor from '@/components/ui/NoirCursor'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -46,6 +48,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-satoshi">
         <NoirCursor />
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
