@@ -5,7 +5,7 @@ import { fadeUp, staggerContainer } from '@/lib/motion'
 
 const LINKS = [
   { label: 'github', href: 'https://github.com/smituplenchwar2687' },
-  { label: 'linkedin', href: 'https://linkedin.com/in/smit-uplenchwar' },
+  { label: 'linkedin', href: 'https://www.linkedin.com/in/smit-uplenchwar-41b473219/' },
   { label: 'email', href: 'mailto:smituplenchwar02@gmail.com' },
 ]
 

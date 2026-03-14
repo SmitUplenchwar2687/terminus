@@ -49,7 +49,7 @@ export default function About() {
         >
           Software Engineer with 4+ years designing and scaling distributed backend systems in{' '}
           <span style={{ color: '#fff' }}>Go and Python</span> on AWS and Kubernetes. Currently at{' '}
-          <span style={{ color: '#fff' }}>Radiant</span>, building high-throughput event-driven
+          <span style={{ color: '#fff' }}>Radiant</span>, building high-throughput event driven
           pipelines and backend infrastructure. M.S. Computer Science,{' '}
           <span style={{ color: '#fff' }}>University at Buffalo</span>. I care about correctness,
           fault tolerance, and systems that hold together under load.
