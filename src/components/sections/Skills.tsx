@@ -41,7 +41,6 @@ export default function Skills() {
         {/* LEFT — categories as flowing text */}
         <div style={{
           borderRight: isMobile ? 'none' : '1px solid #1a1a1a',
-          borderBottom: isMobile ? '1px solid #1a1a1a' : 'none',
         }}>
           {/* Title bar */}
           <div style={{
@@ -92,12 +91,14 @@ export default function Skills() {
           </div>
         </div>
 
-        {/* RIGHT — 3D ring */}
-        {isMobile ? null : (
-          <div style={{ position: 'relative', minHeight: '480px' }}>
-            <SkillsRing />
-          </div>
-        )}
+        {/* RIGHT — 3D ring (desktop) / below categories (mobile) */}
+        <div style={{
+          position: 'relative',
+          minHeight: isMobile ? '280px' : '480px',
+          borderTop: isMobile ? '1px solid #1a1a1a' : 'none',
+        }}>
+          <SkillsRing compact={isMobile} />
+        </div>
       </motion.div>
     </section>
   )

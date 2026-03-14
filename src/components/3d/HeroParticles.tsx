@@ -6,7 +6,7 @@ import type { MutableRefObject } from 'react'
 import * as THREE from 'three'
 
 const PARTICLE_COUNT_DESKTOP = 500
-const PARTICLE_COUNT_MOBILE = 150
+const PARTICLE_COUNT_MOBILE = 300
 const CONNECTION_THRESHOLD = 1.8
 const SPREAD_X = 14
 const SPREAD_Y = 1.5
@@ -187,7 +187,7 @@ export default function HeroParticles({ mouseX, mouseY, isMobile, scrollProgress
       dpr={[1, 1.5]}
     >
       <fogExp2 attach="fog" args={['#000000', 0.04]} />
-      <ParticleNetwork count={count} showLines={!isMobile} scrollProgressRef={scrollProgressRef} />
+      <ParticleNetwork count={count} showLines scrollProgressRef={scrollProgressRef} />
       <CameraRig mouseX={mouseX} mouseY={mouseY} scrollProgressRef={scrollProgressRef} />
       {!isMobile && (
         <EffectComposer>
