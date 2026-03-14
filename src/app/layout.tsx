@@ -10,20 +10,20 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://terminus-smit.vercel.app'),
-  title: 'Smit Uplenchwar — Backend Engineer',
+  metadataBase: new URL('https://smituplenchwar.com'),
+  title: 'Smit Uplenchwar',
   description: 'Backend & Distributed Systems Engineer. 4+ years building high-throughput distributed systems in Go and Python. M.S. Computer Science, University at Buffalo.',
   openGraph: {
     title: 'Smit Uplenchwar — Backend Engineer',
     description: 'Backend & Distributed Systems Engineer. 4+ years building high-throughput distributed systems in Go and Python.',
-    url: 'https://terminus-smit.vercel.app',
+    url: 'https://smituplenchwar.com',
     siteName: 'Smit Uplenchwar',
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Smit Uplenchwar — Backend Engineer' }],
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Smit Uplenchwar' }],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Smit Uplenchwar — Backend Engineer',
+    title: 'Smit Uplenchwar',
     description: 'Backend & Distributed Systems Engineer. Go, Python, distributed systems.',
     images: ['/og.png'],
   },

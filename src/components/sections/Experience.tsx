@@ -275,9 +275,10 @@ export default function Experience() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             {EDUCATION.map((edu) => (
               <div key={edu.school} style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr auto',
-                gap: '1rem',
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                gap: '0.25rem 1rem',
                 alignItems: 'baseline',
               }}>
                 <div>

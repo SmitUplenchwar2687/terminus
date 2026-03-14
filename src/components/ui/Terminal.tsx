@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { EXPERIENCE, SKILL_CATEGORIES, PROJECTS } from '@/lib/constants'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 const LAUNCH_DATE = new Date('2026-03-14')
 function getUptime() { return Math.max(0, Math.floor((Date.now() - LAUNCH_DATE.getTime()) / 86400000)) }
@@ -70,6 +71,7 @@ interface Props { onTriggerMatrix: () => void }
 
 export default function Terminal({ onTriggerMatrix }: Props) {
   const [open, setOpen] = useState(false)
+  const isMobile = useIsMobile()
   const [inputVal, setInputVal] = useState('')
   const [lines, setLines] = useState<Line[]>([
     mk(<span style={{ color: '#00f0ff' }}>Welcome to Terminus v2.0 — type <span style={{ color: '#e0e0e0' }}>help</span> for available commands.</span>)
@@ -321,7 +323,7 @@ export default function Terminal({ onTriggerMatrix }: Props) {
       {/* Terminal panel */}
       <div style={{
         position: 'fixed', bottom: 0, left: 0, right: 0,
-        height: open ? 'clamp(300px, 42vh, 420px)' : 0,
+        height: open ? (isMobile ? 'clamp(320px, 55vh, 520px)' : 'clamp(300px, 42vh, 420px)') : 0,
         zIndex: 999,
         background: '#000',
         borderTop: open ? '1px solid rgba(0,240,255,0.25)' : 'none',
@@ -340,7 +342,9 @@ export default function Terminal({ onTriggerMatrix }: Props) {
         }}>
           <span style={{ color: '#00f0ff', fontSize: '0.6rem', letterSpacing: '0.18em' }}>TERMINAL</span>
           <span style={{ flex: 1 }} />
-          <span style={{ color: '#222', fontSize: '0.58rem', letterSpacing: '0.08em' }}>` to toggle  ·  esc to close</span>
+          <span style={{ color: '#222', fontSize: '0.58rem', letterSpacing: '0.08em' }}>
+            {isMobile ? 'tap × to close' : '` to toggle  ·  esc to close'}
+          </span>
         </div>
 
         {/* Output */}
@@ -372,6 +376,8 @@ export default function Terminal({ onTriggerMatrix }: Props) {
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
+            enterKeyHint="send"
+            inputMode="text"
           />
         </div>
       </div>
