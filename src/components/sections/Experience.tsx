@@ -14,11 +14,12 @@ const EDUCATION = [
 // Bold numbers/metrics in bullet text
 function highlightMetrics(text: string) {
   const parts = text.split(/(~?\d+(?:\.\d+)?[×x%k+]+|\d+\+)/g)
-  return parts.map((part, i) =>
-    /^(~?\d+(?:\.\d+)?[×x%k+]+|\d+\+)$/.test(part)
-      ? <span key={i} style={{ color: '#00f0ff', fontWeight: 600 }}>{part}</span>
-      : part
-  )
+  return parts.map((part, i) => {
+    if (/^(~?\d+(?:\.\d+)?[×x%k+]+|\d+\+)$/.test(part)) {
+      return <span key={i} style={{ color: '#00f0ff', fontWeight: 600 }}>{part}</span>
+    }
+    return part
+  })
 }
 
 export default function Experience() {
